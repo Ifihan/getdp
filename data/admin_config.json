@@ -17,16 +17,26 @@
       "text_y": "80",
       "font_size": "5",
       "text_color": "a05a5a"
+    },
+    "46372d60": {
+      "template_id": "1f814897443847afbdc26c5fdea696e9.png",
+      "font_id": null,
+      "image_x": 50,
+      "image_y": 50,
+      "image_size": 39,
+      "text_y": 76,
+      "font_size": 5,
+      "text_color": "a05a5a"
     }
   },
   "default": {
     "template_id": "1f814897443847afbdc26c5fdea696e9.png",
     "font_id": null,
-    "image_x": "45",
-    "image_y": "55",
-    "image_size": "36",
-    "text_y": "80",
-    "font_size": "5",
+    "image_x": 50,
+    "image_y": 50,
+    "image_size": 39,
+    "text_y": 76,
+    "font_size": 5,
     "text_color": "a05a5a"
   }
 }

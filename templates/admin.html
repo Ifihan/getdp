@@ -74,9 +74,30 @@
             </div>
           </div>
 
-          <!-- Image Size Control -->
+          <!-- Image Settings -->
           <div class="admin-section">
-            <h2>Image Size</h2>
+            <h2>Image Settings</h2>
+
+            <!-- Shape Toggle -->
+            <div class="input-group">
+              <label>Photo Shape</label>
+              <div class="shape-toggle">
+                <button type="button" class="shape-btn active" data-shape="circle" id="circleBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                  </svg>
+                  Circle
+                </button>
+                <button type="button" class="shape-btn" data-shape="rectangle" id="rectangleBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  </svg>
+                  Rectangle
+                </button>
+              </div>
+            </div>
+
+            <!-- Size Slider -->
             <div class="slider-group">
               <label class="slider-label" for="imageSize">
                 <span>Size</span>
@@ -163,14 +184,14 @@
       <div class="share-link-box" id="shareLinkBox">
         <p class="share-link-label">Share this link with users</p>
         <div class="share-link-input">
-          <input type="text" id="shareLink" readonly value="" />
+          <input type="text" id="shareLink" readonly value="" aria-label="Share link" />
           <button type="button" id="copyLinkBtn">Copy</button>
         </div>
       </div>
 
       <!-- Footer -->
       <div class="footer">
-        <p>ICAIR 2025 DP Generator - Admin Panel</p>
+        <p>DP Generator - Admin Panel</p>
       </div>
     </div>
 

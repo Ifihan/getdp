@@ -65,7 +65,7 @@ def process_image():
 
         # Get position parameters
         position_params = {}
-        for key in ["image_x", "image_y", "image_size", "text_y", "font_size", "text_color"]:
+        for key in ["image_x", "image_y", "image_size", "image_shape", "text_x", "text_y", "font_size", "text_color"]:
             if key in request.form:
                 position_params[key] = request.form[key]
 

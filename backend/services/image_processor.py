@@ -85,6 +85,8 @@ class ImageProcessor:
         image_x: float = None,
         image_y: float = None,
         image_size: float = None,
+        image_shape: str = None,
+        text_x: float = None,
         text_y: float = None,
         font_size: float = None,
         text_color: tuple = None,
@@ -97,7 +99,9 @@ class ImageProcessor:
             username: User's name to display
             image_x: Horizontal position (0-1, center offset)
             image_y: Vertical position (0-1, from top)
-            image_size: Circle size as fraction of frame width
+            image_size: Photo size as fraction of frame width
+            image_shape: Photo shape ('circle' or 'rectangle')
+            text_x: Text horizontal position (0-1, from left)
             text_y: Text vertical position (0-1, from top)
             font_size: Font size as fraction of frame width
             text_color: RGBA tuple for text color
@@ -111,9 +115,11 @@ class ImageProcessor:
         logger.info(f"Processing image for user: {username}")
 
         # Use defaults if not provided
-        circle_size = image_size or DEFAULT_CIRCLE_SIZE_PERCENT
-        circle_y = image_y if image_y is not None else DEFAULT_CIRCLE_Y_PERCENT
-        circle_x_offset = image_x if image_x is not None else 0.5
+        photo_size = image_size or DEFAULT_CIRCLE_SIZE_PERCENT
+        photo_y = image_y if image_y is not None else DEFAULT_CIRCLE_Y_PERCENT
+        photo_x_offset = image_x if image_x is not None else 0.5
+        photo_shape = image_shape or 'circle'
+        text_x_pos = text_x if text_x is not None else 0.5
         text_y_pos = text_y or DEFAULT_TEXT_Y_PERCENT
         font_size_pct = font_size or DEFAULT_FONT_SIZE_PERCENT
         color = text_color or DEFAULT_TEXT_COLOR
@@ -130,24 +136,28 @@ class ImageProcessor:
 
             user_image = user_image.convert("RGBA")
 
-            # Calculate circle dimensions
-            circle_diameter = int(self.frame_width * circle_size)
+            # Calculate photo dimensions
+            photo_diameter = int(self.frame_width * photo_size)
 
-            # Resize and crop to circle
+            # Resize and crop
             user_image_resized = self._resize_and_crop(
-                user_image, circle_diameter, circle_diameter
+                user_image, photo_diameter, photo_diameter
             )
 
-            # Apply circular mask
-            mask = self._create_circular_mask(circle_diameter)
-            user_image_resized.putalpha(mask)
+            # Apply mask based on shape
+            if photo_shape == 'circle':
+                mask = self._create_circular_mask(photo_diameter)
+                user_image_resized.putalpha(mask)
+            else:
+                # Rectangle: no special mask needed, just keep as is
+                pass
 
             # Create result from template
             result = self._template.copy()
 
             # Calculate paste position
-            paste_x = int((self.frame_width * circle_x_offset) - (circle_diameter / 2))
-            paste_y = int(self.frame_height * circle_y) - (circle_diameter // 2)
+            paste_x = int((self.frame_width * photo_x_offset) - (photo_diameter / 2))
+            paste_y = int(self.frame_height * photo_y) - (photo_diameter // 2)
 
             # Paste user image
             result.paste(user_image_resized, (paste_x, paste_y), user_image_resized)
@@ -155,7 +165,7 @@ class ImageProcessor:
             # Add username text
             draw = ImageDraw.Draw(result)
             self._add_username_text(
-                draw, username, text_y_pos, font_size_pct, color
+                draw, username, text_x_pos, text_y_pos, font_size_pct, color
             )
 
             # Convert to RGB and encode
@@ -212,6 +222,7 @@ class ImageProcessor:
         self,
         draw: ImageDraw.ImageDraw,
         username: str,
+        text_x: float,
         text_y: float,
         font_size_pct: float,
         color: tuple,
@@ -247,10 +258,10 @@ class ImageProcessor:
         text_box_center_y = int(self.frame_height * text_y)
         start_y = text_box_center_y - (total_text_height // 2)
 
-        # Draw text centered
+        # Draw text (centered on text_x position)
         current_y = start_y
         for line, line_height in zip(lines, line_heights):
             text_width = font.getbbox(line)[2]
-            text_x = (self.frame_width - text_width) // 2
-            draw.text((text_x, current_y), line, fill=color, font=font)
+            line_x = int(self.frame_width * text_x) - (text_width // 2)
+            draw.text((line_x, current_y), line, fill=color, font=font)
             current_y += line_height + int(base_size * 0.3)

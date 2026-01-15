@@ -485,7 +485,39 @@ h1 {
    ============================================ */
 
 .admin-container {
-  max-width: 800px;
+  max-width: 1200px;
+}
+
+/* Admin Layout - Two Columns */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.admin-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-preview {
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+}
+
+.admin-preview h2 {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.preview-instructions {
+  font-size: 0.8em;
+  color: var(--gray-500);
+  margin-bottom: 16px;
 }
 
 .admin-header {
@@ -591,6 +623,47 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: var(--white);
 }
 
+/* Shape Toggle */
+.shape-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.shape-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--gray-600);
+  font-size: 0.8em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.shape-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.shape-btn:hover {
+  border-color: var(--gray-400);
+  background: var(--gray-50);
+}
+
+.shape-btn.active {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
+}
+
 /* Preview Panel */
 .preview-panel {
   background: var(--gray-50);
@@ -659,6 +732,126 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background: var(--gray-800);
 }
 
+/* Interactive Canvas Preview */
+.preview-canvas-container {
+  position: relative;
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 2160 / 2700;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+#previewCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Draggable Elements */
+.draggable-element {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: move;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 10;
+  transition: transform 0.1s ease;
+}
+
+.draggable-element:hover {
+  transform: scale(1.05);
+}
+
+.draggable-element:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+.handle-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--black);
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.handle-icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--white);
+}
+
+.handle-label {
+  background: var(--black);
+  color: var(--white);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7em;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.photo-handle .handle-icon {
+  background: #3b82f6;
+}
+
+.photo-handle .handle-label {
+  background: #3b82f6;
+}
+
+.text-handle .handle-icon {
+  background: #8b5cf6;
+}
+
+.text-handle .handle-label {
+  background: #8b5cf6;
+}
+
+/* Preview Info */
+.preview-info {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.position-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8em;
+  color: var(--gray-600);
+}
+
+.position-display strong {
+  color: var(--gray-900);
+  font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 1024px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-preview {
+    position: relative;
+    top: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -668,5 +861,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  .preview-canvas-container {
+    max-width: 100%;
   }
 }

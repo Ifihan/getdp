@@ -124,6 +124,26 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid image_size value: {params.get('image_size')}")
             raise ValidationError("Invalid image_size value")
 
+    # Image shape (circle or rectangle)
+    if "image_shape" in params:
+        shape = params["image_shape"].lower() if isinstance(params["image_shape"], str) else ""
+        if shape in ["circle", "rectangle"]:
+            sanitized["image_shape"] = shape
+        else:
+            logger.warning(f"Invalid image_shape value: {params.get('image_shape')}")
+            raise ValidationError("image_shape must be 'circle' or 'rectangle'")
+
+    # Text position (x as percentage 0-100)
+    if "text_x" in params:
+        try:
+            value = float(params["text_x"])
+            if not 0 <= value <= 100:
+                raise ValidationError("text_x must be between 0 and 100")
+            sanitized["text_x"] = value / 100
+        except (ValueError, TypeError):
+            logger.warning(f"Invalid text_x value: {params.get('text_x')}")
+            raise ValidationError("Invalid text_x value")
+
     # Text position (y as percentage 0-100)
     if "text_y" in params:
         try:
