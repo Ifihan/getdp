@@ -1,0 +1,32 @@
+{
+  "configs": {
+    "b36e590f": {
+      "image_x": "45",
+      "image_y": "55",
+      "image_size": "35",
+      "text_y": "80",
+      "font_size": "5",
+      "text_color": "ffffff"
+    },
+    "61754d71": {
+      "template_id": "1f814897443847afbdc26c5fdea696e9.png",
+      "font_id": null,
+      "image_x": "45",
+      "image_y": "55",
+      "image_size": "36",
+      "text_y": "80",
+      "font_size": "5",
+      "text_color": "a05a5a"
+    }
+  },
+  "default": {
+    "template_id": "1f814897443847afbdc26c5fdea696e9.png",
+    "font_id": null,
+    "image_x": "45",
+    "image_y": "55",
+    "image_size": "36",
+    "text_y": "80",
+    "font_size": "5",
+    "text_color": "a05a5a"
+  }
+}

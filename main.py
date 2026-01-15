@@ -1,191 +1,115 @@
-from flask import Flask, render_template, request, jsonify
-from PIL import Image, ImageDraw, ImageFont
-import io
-import base64
+"""
+DP Generator Application - Main Entry Point
+
+A Flask application for generating customized display pictures
+with support for custom templates, fonts, and positioning.
+"""
 import os
-import textwrap
-from pillow_heif import register_heif_opener
+import sys
 
-register_heif_opener()
-app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+# Add the project root to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# ============================================================================
-# CUSTOMIZATION SECTION - Edit these paths to customize your generator
-# ============================================================================
-# Replace with your font file path (supports .ttf, .otf)
-FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts/ClashDisplay-Medium.otf")
+from flask import Flask, request, jsonify
+from backend.config import Config
+from backend.routes import api_bp, main_bp, admin_bp
+from backend.utils import setup_logger
 
-# Replace with your frame/template image path (supports .png with transparency)
-FRAME_PATH = os.path.join(os.path.dirname(__file__), "dp.png")
-
-# ============================================================================
-# LAYOUT CONFIGURATION - Adjust these values to customize positioning
-# ============================================================================
-try:
-    FRAME = Image.open(FRAME_PATH).convert("RGBA")
-    FRAME_WIDTH, FRAME_HEIGHT = FRAME.size
-
-    # Font size as percentage of frame width (0.04 = 4%)
-    BASE_FONT_SIZE = int(FRAME_WIDTH * 0.04)
-    FONT = ImageFont.truetype(FONT_PATH, BASE_FONT_SIZE)
-except Exception as e:
-    print(f"Error loading resources: {e}")
-    FRAME, FONT = None, None
+# Initialize logger
+logger = setup_logger()
 
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+def create_app(config_class=Config):
+    """
+    Application factory for creating the Flask app.
+
+    Args:
+        config_class: Configuration class to use
+
+    Returns:
+        Configured Flask application
+    """
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    # Register blueprints
+    app.register_blueprint(main_bp)
+    app.register_blueprint(api_bp)
+    app.register_blueprint(admin_bp)
+
+    # Register error handlers
+    register_error_handlers(app)
+
+    # Add backward compatibility route
+    register_legacy_routes(app)
+
+    logger.info("Application initialized successfully")
+    return app
 
 
-@app.route("/process-image", methods=["POST"])
-def process_image():
-    if not FRAME or not FONT:
-        return jsonify({"error": "Server resources not loaded"}), 500
+def register_error_handlers(app):
+    """Register global error handlers."""
 
-    try:
-        if "image" not in request.files:
-            return jsonify({"error": "No image provided"}), 400
+    @app.errorhandler(400)
+    def bad_request(error):
+        logger.warning(f"Bad request: {error}")
+        return jsonify({"error": "Bad request"}), 400
 
-        uploaded_file = request.files["image"]
-        if uploaded_file.filename == "":
-            return jsonify({"error": "No image selected"}), 400
+    @app.errorhandler(404)
+    def not_found(error):
+        logger.warning(f"Not found: {request.path}")
+        return jsonify({"error": "Resource not found"}), 404
 
-        username = request.form.get("username", "").strip()
-        if not username:
-            return jsonify({"error": "Username is required"}), 400
+    @app.errorhandler(413)
+    def request_entity_too_large(error):
+        logger.warning("File too large")
+        return jsonify({"error": "File too large. Maximum size is 16MB"}), 413
 
-        image_data = uploaded_file.read()
-        user_image = Image.open(io.BytesIO(image_data))
+    @app.errorhandler(500)
+    def internal_error(error):
+        logger.error(f"Internal server error: {error}", exc_info=True)
+        return jsonify({"error": "Internal server error"}), 500
 
+
+def register_legacy_routes(app):
+    """Register backward-compatible routes from old API."""
+    from backend.services import ImageProcessor
+    from backend.utils.validators import ValidationError, validate_image_file
+
+    processor = ImageProcessor()
+
+    @app.route("/process-image", methods=["POST"])
+    def legacy_process():
+        """Legacy endpoint for backward compatibility."""
         try:
-            from PIL import ImageOps
+            if "image" not in request.files:
+                return jsonify({"error": "No image provided"}), 400
 
-            user_image = ImageOps.exif_transpose(user_image)
-        except Exception:
-            pass
+            uploaded_file = request.files["image"]
+            validate_image_file(uploaded_file)
 
-        user_image = user_image.convert("RGBA")
+            username = request.form.get("username", "").strip()
+            if not username:
+                return jsonify({"error": "Username is required"}), 400
 
-        # ============================================================================
-        # IMAGE POSITIONING - Edit these values to adjust the profile picture circle
-        # ============================================================================
-        # Circle size as percentage of frame width (0.395 = 39.5%)
-        circle_diameter = int(FRAME_WIDTH * 0.395)
-        user_image_resized = resize_and_crop(
-            user_image, circle_diameter, circle_diameter
-        )
+            image_data = uploaded_file.read()
+            result = processor.process(image_data=image_data, username=username)
 
-        mask = create_circular_mask(circle_diameter)
-        user_image_resized.putalpha(mask)
+            return jsonify({"image": result})
 
-        result = FRAME.copy()
-        # Horizontal centering
-        paste_x = (FRAME_WIDTH - circle_diameter) // 2
-        # Vertical position (0.50 = 50% from top, centered vertically)
-        paste_y = int(FRAME_HEIGHT * 0.50) - (circle_diameter // 2)
-        result.paste(user_image_resized, (paste_x, paste_y), user_image_resized)
-
-        draw = ImageDraw.Draw(result)
-        add_username_text(draw, username, FRAME_WIDTH, FRAME_HEIGHT)
-
-        result_rgb = result.convert("RGB")
-
-        img_io = io.BytesIO()
-        result_rgb.save(img_io, "JPEG", quality=90, optimize=False)
-        img_io.seek(0)
-
-        img_base64 = base64.b64encode(img_io.getvalue()).decode("utf-8")
-
-        return jsonify({"image": f"data:image/jpeg;base64,{img_base64}"})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        except ValidationError as e:
+            return jsonify({"error": str(e)}), 400
+        except Exception as e:
+            logger.error(f"Legacy processing failed: {e}", exc_info=True)
+            return jsonify({"error": str(e)}), 500
 
 
-# ============================================================================
-# HELPER FUNCTIONS - No customization needed below this line
-# ============================================================================
-
-def resize_and_crop(image, target_width, target_height):
-    """Resize and crop image to fit target dimensions while maintaining aspect ratio."""
-    max_dimension = 1024
-    if image.width > max_dimension or image.height > max_dimension:
-        image.thumbnail((max_dimension, max_dimension), Image.Resampling.BICUBIC)
-
-    img_ratio = image.width / image.height
-    target_ratio = target_width / target_height
-
-    if img_ratio > target_ratio:
-        new_width = int(img_ratio * target_height)
-        new_height = target_height
-    else:
-        new_width = target_width
-        new_height = int(target_width / img_ratio)
-
-    image = image.resize((new_width, new_height), Image.Resampling.BICUBIC)
-
-    left = int((new_width - target_width) / 2)
-    top = int((new_height - target_height) / 2)
-    right = int((new_width + target_width) / 2)
-    bottom = int((new_height + target_height) / 2)
-
-    return image.crop((left, top, right, bottom))
-
-
-def create_circular_mask(size):
-    """Create a circular mask for the profile picture."""
-    mask = Image.new("L", (size, size), 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, size, size), fill=255)
-    return mask
-
-
-def add_username_text(draw, username, frame_width, frame_height):
-    """
-    Add username text to the image.
-
-    CUSTOMIZATION POINTS:
-    - text_box_width: Width of text area (0.4 = 40% of frame width)
-    - text_box_center_y: Vertical position of text (0.745 = 74.5% from top)
-    - fill: Text color in RGBA format (0, 0, 0, 255) = black
-    """
-    username = username.upper()
-    text_box_width = int(frame_width * 0.4)
-
-    # Adjust font size based on username length for better fit
-    font_size = BASE_FONT_SIZE
-    if len(username) > 15:
-        font_size = int(BASE_FONT_SIZE * (15 / len(username)))
-
-    font = FONT.font_variant(size=font_size)
-
-    # Use textwrap for cleaner line breaking
-    avg_char_width = sum(font.getbbox(c)[2] for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26
-    max_chars_per_line = int(text_box_width / avg_char_width)
-    lines = textwrap.wrap(username, width=max_chars_per_line, break_long_words=True)
-
-    if not lines:
-        return
-
-    # Calculate text position
-    line_heights = [font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines]
-    total_text_height = sum(line_heights) + (len(lines) - 1) * int(font_size * 0.3)
-    # Text vertical position (0.745 = 74.5% from top)
-    text_box_center_y = int(frame_height * 0.745)
-    start_y = text_box_center_y - (total_text_height // 2)
-
-    # Draw text line by line - centered horizontally
-    current_y = start_y
-    for line, line_height in zip(lines, line_heights):
-        text_width = font.getbbox(line)[2]
-        text_x = (frame_width - text_width) // 2
-        # Text color: black (0, 0, 0, 255)
-        draw.text((text_x, current_y), line, fill=(0, 0, 0, 255), font=font)
-        current_y += line_height + int(font_size * 0.3)
+# Create the application instance
+app = create_app()
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    debug = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+    logger.info(f"Starting server on port {port}")
+    app.run(host="0.0.0.0", port=port, debug=debug)
