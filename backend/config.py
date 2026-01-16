@@ -1,6 +1,7 @@
 """
 Application configuration management.
 """
+
 import os
 from pathlib import Path
 
@@ -21,7 +22,7 @@ MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
 # Default assets
 DEFAULT_FONT_PATH = DEFAULT_FONTS_DIR / "ClashDisplay-Medium.otf"
-DEFAULT_TEMPLATE_PATH = BASE_DIR / "dp.png"
+DEFAULT_TEMPLATE_PATH = BASE_DIR / "demo.png"
 
 # Allowed file extensions
 ALLOWED_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".heic", ".heif", ".webp"}
@@ -37,6 +38,7 @@ DEFAULT_TEXT_COLOR = (0, 0, 0, 255)  # Black
 
 class Config:
     """Flask configuration class."""
+
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
     MAX_CONTENT_LENGTH = MAX_CONTENT_LENGTH
     DEBUG = os.environ.get("FLASK_DEBUG", "False").lower() == "true"

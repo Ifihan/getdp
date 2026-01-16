@@ -9,8 +9,8 @@
 const CONFIG = {
   MAX_FILE_SIZE: 16 * 1024 * 1024, // 16MB
   MAX_FONT_SIZE: 10 * 1024 * 1024, // 10MB
-  CANVAS_WIDTH: 2160,
-  CANVAS_HEIGHT: 2700,
+  CANVAS_WIDTH: 1024,
+  CANVAS_HEIGHT: 1024,
   DUMMY_NAME: 'John Doe',
 };
 
@@ -52,6 +52,12 @@ const elements = {
   fontUpload: document.getElementById('fontUpload'),
   fontInput: document.getElementById('fontInput'),
   fontFilename: document.getElementById('fontFilename'),
+
+  // Conference settings
+  conferenceName: document.getElementById('conferenceName'),
+  pageSubtitle: document.getElementById('pageSubtitle'),
+  footerText: document.getElementById('footerText'),
+  shareMessage: document.getElementById('shareMessage'),
 
   // Controls
   imageSizeSlider: document.getElementById('imageSize'),
@@ -262,7 +268,7 @@ function loadDefaultImages() {
     state.templateImage = templateImg;
     drawPreview();
   };
-  templateImg.src = '/static/assets/dp.png';
+  templateImg.src = '/static/assets/demo.png';
 
   // Create dummy photo (gradient circle)
   createDummyPhoto();
@@ -393,6 +399,17 @@ setupUploadArea(
           const img = new Image();
           img.onload = () => {
             state.templateImage = img;
+
+            // Update canvas dimensions to match template
+            CONFIG.CANVAS_WIDTH = img.width;
+            CONFIG.CANVAS_HEIGHT = img.height;
+            elements.canvas.width = img.width;
+            elements.canvas.height = img.height;
+
+            // Update container aspect ratio
+            const container = elements.canvas.parentElement;
+            container.style.aspectRatio = `${img.width} / ${img.height}`;
+
             drawPreview();
           };
           img.src = e.target.result;
@@ -567,6 +584,10 @@ function getConfiguration() {
   return {
     template_id: state.templateId,
     font_id: state.fontId,
+    conference_name: elements.conferenceName.value.trim() || 'Conference',
+    page_subtitle: elements.pageSubtitle.value.trim() || '',
+    footer_text: elements.footerText.value.trim() || '',
+    share_message: elements.shareMessage.value.trim() || '',
     image_x: Math.round(state.imageX),
     image_y: Math.round(state.imageY),
     image_size: Math.round(state.imageSize),
@@ -582,7 +603,7 @@ async function saveConfiguration() {
   try {
     const config = getConfiguration();
 
-    const response = await fetch('/admin/api/save-config', {
+    const response = await fetch('/api/save-config', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -600,7 +621,7 @@ async function saveConfiguration() {
 
     // Update share link
     const baseUrl = window.location.origin;
-    const shareUrl = data.config_id ? `${baseUrl}/?config=${data.config_id}` : baseUrl;
+    const shareUrl = data.config_id ? `${baseUrl}/generate-dp?config=${data.config_id}` : `${baseUrl}/generate-dp`;
     elements.shareLink.value = shareUrl;
 
     showCustomAlert({
@@ -618,7 +639,7 @@ async function saveConfiguration() {
 
 async function loadConfiguration() {
   try {
-    const response = await fetch('/admin/api/get-config');
+    const response = await fetch('/api/get-config');
 
     if (!response.ok) {
       return null;
@@ -662,10 +683,24 @@ async function loadConfiguration() {
       if (config.template_id) state.templateId = config.template_id;
       if (config.font_id) state.fontId = config.font_id;
 
+      // Load conference settings
+      if (config.conference_name) {
+        elements.conferenceName.value = config.conference_name;
+      }
+      if (config.page_subtitle) {
+        elements.pageSubtitle.value = config.page_subtitle;
+      }
+      if (config.footer_text) {
+        elements.footerText.value = config.footer_text;
+      }
+      if (config.share_message) {
+        elements.shareMessage.value = config.share_message;
+      }
+
       // Update share link
       if (data.config_id) {
         const baseUrl = window.location.origin;
-        elements.shareLink.value = `${baseUrl}/?config=${data.config_id}`;
+        elements.shareLink.value = `${baseUrl}/generate-dp?config=${data.config_id}`;
       }
 
       drawPreview();
@@ -722,7 +757,7 @@ window.addEventListener('resize', () => {
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
   // Set initial share link
-  elements.shareLink.value = window.location.origin;
+  elements.shareLink.value = `${window.location.origin}/generate-dp`;
 
   // Initialize canvas and preview
   initializeCanvas();

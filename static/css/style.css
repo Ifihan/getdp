@@ -274,8 +274,12 @@ h1 {
 
 #previewImage {
   max-width: 100%;
+  height: auto;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
 
 /* Share Section */
@@ -739,7 +743,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: 2px solid var(--gray-200);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  aspect-ratio: 2160 / 2700;
+  aspect-ratio: 1 / 1;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;

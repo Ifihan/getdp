@@ -43,6 +43,11 @@ const elements = {
   downloadBtn: document.getElementById('downloadBtn'),
   resetBtn: document.getElementById('resetBtn'),
 
+  // Page elements
+  pageTitle: document.getElementById('pageTitle'),
+  pageSubtitle: document.getElementById('pageSubtitle'),
+  footerText: document.getElementById('footerText'),
+
   // Alert dialog
   alertOverlay: document.getElementById('customAlertOverlay'),
   alertIcon: document.getElementById('customAlertIcon'),
@@ -291,9 +296,11 @@ function resetForm() {
   elements.mainForm.classList.remove('hidden');
   elements.previewContainer.classList.remove('show');
 
-  // Reset page title
-  document.getElementById('pageTitle').textContent = 'ICAIR 2025';
-  document.getElementById('pageSubtitle').textContent = 'Generate your conference profile picture';
+  // Reset page title - use conference name from config or default
+  const conferenceName = state.adminConfig?.conference_name || 'ICAIR 2025';
+  const subtitle = state.adminConfig?.page_subtitle || 'Generate your conference profile picture';
+  elements.pageTitle.textContent = conferenceName;
+  elements.pageSubtitle.textContent = subtitle;
 
   hideError();
 }
@@ -468,8 +475,8 @@ async function loadAdminConfig() {
 
   try {
     const url = configId
-      ? `/admin/api/get-config?config_id=${configId}`
-      : '/admin/api/get-config';
+      ? `/api/get-config?config_id=${configId}`
+      : '/api/get-config';
 
     const response = await fetch(url);
 
@@ -477,6 +484,28 @@ async function loadAdminConfig() {
       const data = await response.json();
       if (data.config) {
         state.adminConfig = data.config;
+
+        // Apply conference name to page title
+        if (data.config.conference_name) {
+          elements.pageTitle.textContent = data.config.conference_name;
+          document.title = `${data.config.conference_name} - Get Your DP`;
+        }
+
+        // Apply page subtitle
+        if (data.config.page_subtitle) {
+          elements.pageSubtitle.textContent = data.config.page_subtitle;
+        }
+
+        // Apply footer text
+        if (data.config.footer_text) {
+          elements.footerText.textContent = data.config.footer_text;
+        }
+
+        // Update share message if provided
+        if (data.config.share_message) {
+          CONFIG.SHARE_TEXT = data.config.share_message;
+        }
+
         console.log('Loaded admin config');
       }
     }

@@ -33,9 +33,9 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Register blueprints
-    app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp)  # Admin at root
     app.register_blueprint(api_bp)
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(main_bp)
 
     # Register error handlers
     register_error_handlers(app)

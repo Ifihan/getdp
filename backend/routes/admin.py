@@ -1,6 +1,7 @@
 """
 Admin routes for configuration management.
 """
+
 import json
 import uuid
 from pathlib import Path
@@ -9,7 +10,7 @@ from flask import Blueprint, request, jsonify, render_template
 from backend.config import BASE_DIR
 from backend.utils import get_logger
 
-admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
+admin_bp = Blueprint("admin", __name__)
 logger = get_logger()
 
 # Configuration storage path
@@ -109,10 +110,9 @@ def api_save_config():
         config_id = save_config(config)
 
         logger.info(f"Configuration saved: {config_id}")
-        return jsonify({
-            "message": "Configuration saved successfully",
-            "config_id": config_id
-        })
+        return jsonify(
+            {"message": "Configuration saved successfully", "config_id": config_id}
+        )
 
     except Exception as e:
         logger.error(f"Failed to save configuration: {e}", exc_info=True)
@@ -132,15 +132,9 @@ def api_get_config():
         config = load_config(config_id)
 
         if config:
-            return jsonify({
-                "config": config,
-                "config_id": config_id
-            })
+            return jsonify({"config": config, "config_id": config_id})
         else:
-            return jsonify({
-                "config": None,
-                "message": "No configuration found"
-            })
+            return jsonify({"config": None, "message": "No configuration found"})
 
     except Exception as e:
         logger.error(f"Failed to get configuration: {e}", exc_info=True)

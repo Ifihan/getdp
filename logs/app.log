@@ -65,3 +65,79 @@
 2026-01-15 16:32:09 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/dp.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=2160x2700
 2026-01-15 16:32:09 | INFO     | dp_generator:create_app:46 | Application initialized successfully
 2026-01-15 16:32:09 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:45:37 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:45:37 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:45:37 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:45:58 | WARNING  | dp_generator:not_found:60 | Not found: /admin/
+2026-01-15 17:46:04 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:47:53 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:47:53 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:47:53 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:47:56 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:49:24 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:49:24 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:49:24 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:49:27 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:49:34 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:49:34 | WARNING  | dp_generator:not_found:60 | Not found: /favicon.ico
+2026-01-15 17:50:44 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:50:44 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:50:44 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:51:01 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:51:01 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:51:01 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:51:04 | WARNING  | dp_generator:not_found:60 | Not found: /static/assets/dp.png
+2026-01-15 17:51:04 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:51:34 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:51:34 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:51:34 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:51:37 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:51:37 | WARNING  | dp_generator:not_found:60 | Not found: /static/assets/dp.png
+2026-01-15 17:51:38 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:51:38 | WARNING  | dp_generator:not_found:60 | Not found: /static/assets/dp.png
+2026-01-15 17:51:40 | WARNING  | dp_generator:not_found:60 | Not found: /admin/api/get-config
+2026-01-15 17:51:40 | WARNING  | dp_generator:not_found:60 | Not found: /static/assets/dp.png
+2026-01-15 17:51:40 | WARNING  | dp_generator:not_found:60 | Not found: /favicon.ico
+2026-01-15 17:52:32 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:52:32 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:52:32 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 17:54:04 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 17:54:04 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 17:54:04 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:04:21 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:04:21 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:04:21 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:04:34 | WARNING  | dp_generator:not_found:60 | Not found: /favicon.ico
+2026-01-15 22:07:19 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:07:19 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:07:19 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:07:31 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:07:31 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:07:31 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:08:26 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:08:26 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:08:26 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:08:35 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:08:35 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:08:35 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:09:00 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:09:00 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:09:00 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:29:23 | INFO     | dp_generator:api_save_config:112 | Configuration saved: 13ea1efa
+2026-01-15 22:35:15 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 22:35:15 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 22:35:15 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 22:35:20 | WARNING  | dp_generator:not_found:60 | Not found: /api/get-config
+2026-01-15 23:04:06 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 23:04:06 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 23:04:06 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 23:04:54 | INFO     | dp_generator:api_save_config:112 | Configuration saved: bec3fe2e
+2026-01-15 23:10:07 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-15 23:10:07 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-15 23:10:07 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-15 23:10:47 | INFO     | dp_generator:api_save_config:112 | Configuration saved: 27ccd246
+2026-01-16 08:56:11 | INFO     | dp_generator:_load_resources:56 | Resources loaded: template=/Users/ifihan/Projects/icair-get-dp/demo.png, font=/Users/ifihan/Projects/icair-get-dp/fonts/ClashDisplay-Medium.otf, size=1024x1024
+2026-01-16 08:56:11 | INFO     | dp_generator:create_app:46 | Application initialized successfully
+2026-01-16 08:56:11 | INFO     | dp_generator:<module>:114 | Starting server on port 8080
+2026-01-16 08:57:39 | WARNING  | dp_generator:not_found:60 | Not found: /.well-known/appspecific/com.chrome.devtools.json
+2026-01-16 09:49:02 | INFO     | dp_generator:api_save_config:112 | Configuration saved: 729c1382
