@@ -21,6 +21,7 @@ const state = {
   templateId: null,
   fontId: null,
   configSaved: false,
+  editingConfigId: null, // Track if we're editing an existing config
   // Images
   templateImage: null,
   dummyPhotoImage: null,
@@ -608,6 +609,11 @@ async function saveConfiguration() {
 
     const config = getConfiguration();
 
+    // If editing, include the config_id to update existing
+    if (state.editingConfigId) {
+      config.config_id = state.editingConfigId;
+    }
+
     const response = await fetch('/api/save-config', {
       method: 'POST',
       headers: {
@@ -624,15 +630,26 @@ async function saveConfiguration() {
 
     state.configSaved = true;
 
+    // If this was a new config, store the ID for future edits
+    if (!state.editingConfigId && data.config_id) {
+      state.editingConfigId = data.config_id;
+      // Update URL to reflect we're now editing this config
+      const newUrl = `${window.location.pathname}?edit=${data.config_id}`;
+      window.history.replaceState({}, '', newUrl);
+    }
+
     // Update share link
     const baseUrl = window.location.origin;
-    const shareUrl = data.config_id ? `${baseUrl}/generate-dp?config=${data.config_id}` : `${baseUrl}/generate-dp`;
+    const configId = state.editingConfigId || data.config_id;
+    const shareUrl = configId ? `${baseUrl}/generate-dp?config=${configId}` : `${baseUrl}/generate-dp`;
     elements.shareLink.value = shareUrl;
 
     showCustomAlert({
       type: 'success',
-      title: 'Template Saved',
-      message: 'Your template has been saved. Share the link below with users or view it in Generated Templates.',
+      title: state.editingConfigId ? 'Template Updated' : 'Template Saved',
+      message: state.editingConfigId
+        ? 'Your template has been updated successfully.'
+        : 'Your template has been saved. Share the link below with users or view it in Generated Templates.',
     });
 
     return data;
@@ -794,6 +811,9 @@ async function loadConfigurationById(configId) {
     if (data.config) {
       const config = data.config;
 
+      // Set editing mode - this config ID will be used when saving
+      state.editingConfigId = configId;
+
       // Apply all configuration values
       if (config.template_name) {
         elements.templateName.value = config.template_name;
@@ -827,7 +847,15 @@ async function loadConfigurationById(configId) {
         elements.textColorInput.value = state.textColor;
       }
 
-      if (config.template_id) state.templateId = config.template_id;
+      if (config.template_id) {
+        state.templateId = config.template_id;
+        // Load the template image from server
+        loadTemplateImage(config.template_id);
+        // Update UI to show template is loaded
+        elements.templateUpload.classList.add('has-file');
+        elements.templateFilename.textContent = 'Template loaded';
+        elements.templateFilename.classList.remove('hidden');
+      }
       if (config.font_id) state.fontId = config.font_id;
 
       // Load conference settings
@@ -857,4 +885,31 @@ async function loadConfigurationById(configId) {
     console.log('Failed to load configuration:', error);
     return null;
   }
+}
+
+/**
+ * Load template image from server by ID
+ */
+function loadTemplateImage(templateId) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    state.templateImage = img;
+
+    // Update canvas dimensions to match template
+    CONFIG.CANVAS_WIDTH = img.width;
+    CONFIG.CANVAS_HEIGHT = img.height;
+    elements.canvas.width = img.width;
+    elements.canvas.height = img.height;
+
+    // Update container aspect ratio
+    const container = elements.canvas.parentElement;
+    container.style.aspectRatio = `${img.width} / ${img.height}`;
+
+    drawPreview();
+  };
+  img.onerror = () => {
+    console.log('Failed to load template image, using default');
+  };
+  img.src = `/api/uploads/templates/${templateId}`;
 }

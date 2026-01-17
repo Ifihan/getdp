@@ -4,6 +4,7 @@ DP Generator Application - Main Entry Point
 A Flask application for generating customized display pictures
 with support for custom templates, fonts, and positioning.
 """
+
 import os
 import sys
 

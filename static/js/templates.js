@@ -299,10 +299,20 @@ function openTemplateModal(configId) {
   elements.modalDate.textContent = `Created: ${formatDateTime(template.created_at)}`;
   elements.modalLink.value = getTemplateLink(configId);
 
+  // Set preview image - use template image if available, otherwise show placeholder
+  if (template.template_id) {
+    elements.modalPreview.src = `/api/uploads/templates/${template.template_id}`;
+    elements.modalPreview.style.display = 'block';
+  } else {
+    // Use a default/demo template
+    elements.modalPreview.src = '/static/assets/demo.png';
+    elements.modalPreview.style.display = 'block';
+  }
+
   // Populate configuration details
   elements.modalConfig.innerHTML = `
     <div class="config-item">
-      <div class="config-item-label">Conference</div>
+      <div class="config-item-label">Event Name</div>
       <div class="config-item-value">${escapeHtml(template.conference_name || 'Not set')}</div>
     </div>
     <div class="config-item">

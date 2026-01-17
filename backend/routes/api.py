@@ -3,10 +3,10 @@ API routes for image processing and file uploads.
 """
 import uuid
 from pathlib import Path
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 
-from backend.config import TEMPLATES_DIR, FONTS_DIR, DEFAULT_FONT_PATH, DEFAULT_TEMPLATE_PATH
+from backend.config import TEMPLATES_DIR, FONTS_DIR, DEFAULT_FONT_PATH, DEFAULT_TEMPLATE_PATH, BASE_DIR
 from backend.services import ImageProcessor
 from backend.utils import (
     get_logger,
@@ -202,3 +202,15 @@ def upload_font():
 def legacy_process_image():
     """Legacy endpoint for backward compatibility."""
     return process_image()
+
+
+@api_bp.route("/uploads/templates/<path:filename>")
+def serve_template(filename):
+    """Serve uploaded template files."""
+    return send_from_directory(TEMPLATES_DIR, filename)
+
+
+@api_bp.route("/uploads/fonts/<path:filename>")
+def serve_font(filename):
+    """Serve uploaded font files."""
+    return send_from_directory(FONTS_DIR, filename)

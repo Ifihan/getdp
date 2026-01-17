@@ -64,7 +64,11 @@ def load_all_configs():
 
 
 def save_config(config, config_id=None):
-    """Save configuration to file."""
+    """Save configuration to file.
+
+    If config_id is provided and exists, updates the existing config.
+    Otherwise creates a new config with a new ID.
+    """
     ensure_config_dir()
 
     try:
@@ -74,8 +78,15 @@ def save_config(config, config_id=None):
             with open(CONFIG_FILE, "r") as f:
                 data = json.load(f)
 
-        # Generate config ID if not provided
-        if not config_id:
+        # Check if this is an update to an existing config
+        if config_id and "configs" in data and config_id in data["configs"]:
+            # Update existing config - preserve created_at if not provided
+            existing = data["configs"][config_id]
+            if "created_at" not in config and "created_at" in existing:
+                config["created_at"] = existing["created_at"]
+            config["updated_at"] = __import__("datetime").datetime.now().isoformat()
+        elif not config_id:
+            # Generate new config ID
             config_id = uuid.uuid4().hex[:8]
 
         # Save config
@@ -139,6 +150,12 @@ def templates_page():
     return render_template("generated_templates.html")
 
 
+@admin_bp.route("/docs")
+def docs_page():
+    """Serve the documentation page."""
+    return render_template("docs.html")
+
+
 @admin_bp.route("/admin")
 def admin_page():
     """Serve the legacy admin panel page."""
@@ -152,6 +169,7 @@ def api_save_config():
     Save admin configuration.
 
     JSON body:
+        - config_id: Existing config ID to update (optional)
         - template_name: Name of the template
         - template_id: Custom template ID (optional)
         - font_id: Custom font ID (optional)
@@ -169,7 +187,10 @@ def api_save_config():
         if not config:
             return jsonify({"error": "No configuration provided"}), 400
 
-        config_id = save_config(config)
+        # Extract config_id if provided (for updates)
+        config_id = config.pop("config_id", None)
+
+        config_id = save_config(config, config_id)
 
         logger.info(f"Configuration saved: {config_id}")
         return jsonify(

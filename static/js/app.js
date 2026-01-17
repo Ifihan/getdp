@@ -7,8 +7,8 @@
 // CONFIGURATION
 // ============================================
 const CONFIG = {
-  SHARE_TEXT: "I'm excited to announce that I will be attending the 5th International Conference on AI and Robotics happening on Nov 4-6 at UNILAG.\n\nRegister today: https://icair.unilag.edu.ng/\n\n#icair2025",
-  SHARE_URL: "https://icair.unilag.edu.ng/",
+  SHARE_TEXT: "Check out my new profile picture! Generated with DP Generator.",
+  SHARE_URL: "",
   MAX_FILE_SIZE: 16 * 1024 * 1024, // 16MB
 };
 
@@ -195,11 +195,8 @@ function setupPhotoUpload() {
 async function generateDP() {
   const username = elements.usernameInput.value.trim();
 
-  if (!username) {
-    showError('Please enter your name');
-    elements.usernameInput.focus();
-    return;
-  }
+  // Name is optional - only validate if template uses text
+  // The backend will handle cases where username is empty
 
   if (!state.selectedImage) {
     showError('Please upload a photo');
@@ -277,7 +274,11 @@ async function generateDP() {
 function downloadImage() {
   const link = document.createElement('a');
   link.href = elements.previewImage.src;
-  link.download = 'icair-2025-dp.png';
+  // Use conference name for filename if available, otherwise generic
+  const filename = state.adminConfig?.conference_name
+    ? `${state.adminConfig.conference_name.toLowerCase().replace(/\s+/g, '-')}-dp.png`
+    : 'my-dp.png';
+  link.download = filename;
   link.click();
 }
 
@@ -297,8 +298,8 @@ function resetForm() {
   elements.previewContainer.classList.remove('show');
 
   // Reset page title - use conference name from config or default
-  const conferenceName = state.adminConfig?.conference_name || 'ICAIR 2025';
-  const subtitle = state.adminConfig?.page_subtitle || 'Generate your conference profile picture';
+  const conferenceName = state.adminConfig?.conference_name || 'Get Your DP';
+  const subtitle = state.adminConfig?.page_subtitle || 'Generate your profile picture';
   elements.pageTitle.textContent = conferenceName;
   elements.pageSubtitle.textContent = subtitle;
 
@@ -327,9 +328,12 @@ async function tryWebShareMobile() {
     const blob = await getImageBlob();
     if (!blob) return false;
 
-    const file = new File([blob], 'icair-2025-dp.png', { type: 'image/png' });
+    const filename = state.adminConfig?.conference_name
+      ? `${state.adminConfig.conference_name.toLowerCase().replace(/\s+/g, '-')}-dp.png`
+      : 'my-dp.png';
+    const file = new File([blob], filename, { type: 'image/png' });
     const shareData = {
-      title: 'ICAIR 2025',
+      title: state.adminConfig?.conference_name || 'My DP',
       text: CONFIG.SHARE_TEXT,
       files: [file],
     };

@@ -3,30 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ICAIR 2025 - Get Your DP</title>
+    <title>Get Your DP</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
     <div class="container">
-      <h1 id="pageTitle">ICAIR 2025</h1>
+      <h1 id="pageTitle">Get Your DP</h1>
       <p class="subtitle" id="pageSubtitle">
-        Generate your conference profile picture
+        Generate your profile picture
       </p>
 
       <div class="error-message" id="errorMessage"></div>
 
       <!-- Main Form - Simple user input -->
       <div class="main-form" id="mainForm">
-        <div class="input-group">
+        <div class="input-group" id="nameInputGroup">
           <label for="usernameInput">
-            Your Name <span class="required">*</span>
+            Your Name <span class="optional-text" id="nameOptional">(Optional)</span>
           </label>
           <input
             type="text"
             id="usernameInput"
             placeholder="Enter your name"
             maxlength="30"
-            required
           />
         </div>
 
