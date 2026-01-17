@@ -1,13 +1,5 @@
 {
   "configs": {
-    "b36e590f": {
-      "image_x": "45",
-      "image_y": "55",
-      "image_size": "35",
-      "text_y": "80",
-      "font_size": "5",
-      "text_color": "ffffff"
-    },
     "61754d71": {
       "template_id": "1f814897443847afbdc26c5fdea696e9.png",
       "font_id": null,
@@ -28,18 +20,6 @@
       "font_size": 5,
       "text_color": "a05a5a"
     },
-    "13ea1efa": {
-      "template_id": "1f814897443847afbdc26c5fdea696e9.png",
-      "font_id": null,
-      "image_x": 50,
-      "image_y": 45,
-      "image_size": 39,
-      "image_shape": "circle",
-      "text_x": 50,
-      "text_y": 78,
-      "font_size": 4,
-      "text_color": "000aff"
-    },
     "bec3fe2e": {
       "template_id": "1f814897443847afbdc26c5fdea696e9.png",
       "font_id": null,
@@ -47,21 +27,6 @@
       "share_message": "Join me at tech conf!",
       "image_x": 50,
       "image_y": 46,
-      "image_size": 39,
-      "image_shape": "circle",
-      "text_x": 50,
-      "text_y": 78,
-      "font_size": 4,
-      "text_color": "000aff"
-    },
-    "27ccd246": {
-      "template_id": "1f814897443847afbdc26c5fdea696e9.png",
-      "font_id": null,
-      "conference_name": "Tech conf!",
-      "footer_text": "FFFFFFFF DFFGFHGHG sfgdngn",
-      "share_message": "Join me at tech conf!",
-      "image_x": 50,
-      "image_y": 45,
       "image_size": 39,
       "image_shape": "circle",
       "text_x": 50,
