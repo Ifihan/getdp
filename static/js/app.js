@@ -195,8 +195,12 @@ function setupPhotoUpload() {
 async function generateDP() {
   const username = elements.usernameInput.value.trim();
 
-  // Name is optional - only validate if template uses text
-  // The backend will handle cases where username is empty
+  // Check if name is required based on template config
+  if (state.adminConfig?.name_required && !username) {
+    showError('Please enter your name');
+    elements.usernameInput.focus();
+    return;
+  }
 
   if (!state.selectedImage) {
     showError('Please upload a photo');
@@ -508,6 +512,15 @@ async function loadAdminConfig() {
         // Update share message if provided
         if (data.config.share_message) {
           CONFIG.SHARE_TEXT = data.config.share_message;
+        }
+
+        // Update name field requirement
+        const nameInputGroup = document.getElementById('nameInputGroup');
+        if (data.config.name_required === false && nameInputGroup) {
+          // Hide the entire name input section if name is not required
+          nameInputGroup.style.display = 'none';
+        } else if (nameInputGroup) {
+          nameInputGroup.style.display = 'block';
         }
 
         console.log('Loaded admin config');

@@ -71,6 +71,7 @@ const elements = {
   textColorInput: document.getElementById('textColor'),
   circleBtn: document.getElementById('circleBtn'),
   rectangleBtn: document.getElementById('rectangleBtn'),
+  nameRequiredCheckbox: document.getElementById('nameRequired'),
 
   // Preview
   canvas: document.getElementById('previewCanvas'),
@@ -586,6 +587,7 @@ function getConfiguration() {
     page_subtitle: elements.pageSubtitle.value.trim() || '',
     footer_text: elements.footerText.value.trim() || '',
     share_message: elements.shareMessage.value.trim() || '',
+    name_required: elements.nameRequiredCheckbox.checked,
     image_x: Math.round(state.imageX),
     image_y: Math.round(state.imageY),
     image_size: Math.round(state.imageSize),
@@ -720,6 +722,11 @@ async function loadConfiguration() {
       }
       if (config.share_message) {
         elements.shareMessage.value = config.share_message;
+      }
+
+      // Load name required setting
+      if (config.name_required !== undefined) {
+        elements.nameRequiredCheckbox.checked = config.name_required;
       }
 
       // Update share link
@@ -870,6 +877,11 @@ async function loadConfigurationById(configId) {
       }
       if (config.share_message) {
         elements.shareMessage.value = config.share_message;
+      }
+
+      // Load name required setting
+      if (config.name_required !== undefined) {
+        elements.nameRequiredCheckbox.checked = config.name_required;
       }
 
       // Update share link

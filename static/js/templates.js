@@ -316,6 +316,10 @@ function openTemplateModal(configId) {
       <div class="config-item-value">${escapeHtml(template.conference_name || 'Not set')}</div>
     </div>
     <div class="config-item">
+      <div class="config-item-label">Name Required</div>
+      <div class="config-item-value">${template.name_required !== false ? 'Yes' : 'No'}</div>
+    </div>
+    <div class="config-item">
       <div class="config-item-label">Photo Shape</div>
       <div class="config-item-value">${template.image_shape || 'circle'}</div>
     </div>
