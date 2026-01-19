@@ -80,10 +80,11 @@ def register_legacy_routes(app):
             return jsonify({"image": result})
 
         except ValidationError as e:
-            return jsonify({"error": str(e)}), 400
+            logger.warning(f"Validation error: {e}")
+            return jsonify({"error": "Invalid input provided"}), 400
         except Exception as e:
             logger.error(f"Legacy processing failed: {e}", exc_info=True)
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": "Failed to process image"}), 500
 
 
 app = create_app()

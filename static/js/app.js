@@ -200,6 +200,9 @@ async function generateDP() {
       if (state.adminConfig.image_size) {
         formData.append('image_size', state.adminConfig.image_size);
       }
+      if (state.adminConfig.image_shape) {
+        formData.append('image_shape', state.adminConfig.image_shape);
+      }
       if (state.adminConfig.text_y) {
         formData.append('text_y', state.adminConfig.text_y);
       }

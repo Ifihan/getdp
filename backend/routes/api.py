@@ -50,7 +50,13 @@ def process_image():
         processor = get_processor()
 
         if template_id:
-            template_path = TEMPLATES_DIR / template_id
+            template_path = TEMPLATES_DIR / secure_filename(template_id)
+            template_path = template_path.resolve()
+
+            if not str(template_path).startswith(str(TEMPLATES_DIR.resolve())):
+                logger.warning(f"Path traversal attempt in template_id: {template_id}")
+                return jsonify({"error": "Invalid template ID"}), 400
+
             if template_path.exists():
                 processor.set_template(template_path)
                 logger.info(f"Using custom template: {template_id}")
@@ -60,7 +66,13 @@ def process_image():
             processor.set_template(DEFAULT_TEMPLATE_PATH)
 
         if font_id:
-            font_path = FONTS_DIR / font_id
+            font_path = FONTS_DIR / secure_filename(font_id)
+            font_path = font_path.resolve()
+
+            if not str(font_path).startswith(str(FONTS_DIR.resolve())):
+                logger.warning(f"Path traversal attempt in font_id: {font_id}")
+                return jsonify({"error": "Invalid font ID"}), 400
+
             if font_path.exists():
                 processor.set_font(font_path)
                 logger.info(f"Using custom font: {font_id}")
@@ -76,7 +88,7 @@ def process_image():
 
     except ValidationError as e:
         logger.warning(f"Validation error: {e}")
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": "Invalid input provided"}), 400
     except Exception as e:
         logger.error(f"Image processing failed: {e}", exc_info=True)
         return jsonify({"error": "Failed to process image. Please try again."}), 500
@@ -103,7 +115,8 @@ def upload_template():
         return jsonify({"template_id": template_id, "message": "Template uploaded successfully"})
 
     except ValidationError as e:
-        return jsonify({"error": str(e)}), 400
+        logger.warning(f"Validation error: {e}")
+        return jsonify({"error": "Invalid file provided"}), 400
     except Exception as e:
         logger.error(f"Template upload failed: {e}", exc_info=True)
         return jsonify({"error": "Failed to upload template"}), 500
@@ -130,7 +143,8 @@ def upload_font():
         return jsonify({"font_id": font_id, "message": "Font uploaded successfully"})
 
     except ValidationError as e:
-        return jsonify({"error": str(e)}), 400
+        logger.warning(f"Validation error: {e}")
+        return jsonify({"error": "Invalid file provided"}), 400
     except Exception as e:
         logger.error(f"Font upload failed: {e}", exc_info=True)
         return jsonify({"error": "Failed to upload font"}), 500
