@@ -12,4 +12,15 @@ wheels/
 # MacOS files
 .DS_Store
 
+# Environment variables
 .env
+
+# User-uploaded files and data
+uploads/templates/*
+!uploads/templates/.gitkeep
+uploads/fonts/*
+!uploads/fonts/.gitkeep
+
+# Configuration and logs
+data/admin_config.json
+logs/*.log

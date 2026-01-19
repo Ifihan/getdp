@@ -196,7 +196,9 @@ async function generateDP() {
   const username = elements.usernameInput.value.trim();
 
   // Check if name is required based on template config
-  if (state.adminConfig?.name_required && !username) {
+  // Only validate if explicitly required (true or undefined means required)
+  const nameRequired = state.adminConfig?.name_required !== false;
+  if (nameRequired && !username) {
     showError('Please enter your name');
     elements.usernameInput.focus();
     return;
@@ -516,14 +518,20 @@ async function loadAdminConfig() {
 
         // Update name field requirement
         const nameInputGroup = document.getElementById('nameInputGroup');
-        if (data.config.name_required === false && nameInputGroup) {
-          // Hide the entire name input section if name is not required
-          nameInputGroup.style.display = 'none';
-        } else if (nameInputGroup) {
-          nameInputGroup.style.display = 'block';
+        console.log('Name required setting:', data.config.name_required, 'Type:', typeof data.config.name_required);
+        if (data.config.name_required === false) {
+          console.log('Hiding name field');
+          if (nameInputGroup) {
+            nameInputGroup.style.display = 'none';
+          }
+        } else {
+          console.log('Showing name field');
+          if (nameInputGroup) {
+            nameInputGroup.style.display = 'block';
+          }
         }
 
-        console.log('Loaded admin config');
+        console.log('Loaded admin config', data.config);
       }
     }
   } catch (error) {

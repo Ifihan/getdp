@@ -57,11 +57,8 @@ def process_image():
         image_file = request.files["image"]
         validate_image_file(image_file)
 
-        # Validate username
+        # Get username (may be empty if not required)
         username = request.form.get("username", "").strip()
-        if not username:
-            logger.warning("Process request missing username")
-            return jsonify({"error": "Username is required"}), 400
 
         # Get position parameters
         position_params = {}
