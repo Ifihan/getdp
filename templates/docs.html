@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation - DP Generator</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body class="dashboard-body">
+    <header class="nav-header">
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="/" class="nav-logo">DP Generator</a>
+          <nav class="nav-links">
+            <a href="/" class="nav-link">Create Template</a>
+            <a href="/docs" class="nav-link active">Documentation</a>
+          </nav>
+        </div>
+        <div class="nav-right">
+          <a href="/templates" class="nav-link nav-link-primary">Generated Templates</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="docs-container">
+        <div class="docs-header">
+          <h1>Documentation</h1>
+          <p class="subtitle">Learn how to create and share your custom DP templates</p>
+        </div>
+
+        <section class="docs-section">
+          <h2>Quick Start</h2>
+          <p>Get started with DP Generator in three simple steps:</p>
+
+          <div class="docs-steps">
+            <div class="docs-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3>Create a Template</h3>
+                <p>Go to the <a href="/">Create Template</a> page and upload your template image (PNG with transparency recommended). Configure the photo position, size, and text settings.</p>
+              </div>
+            </div>
+
+            <div class="docs-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3>Save & Get Link</h3>
+                <p>Give your template a name and save it. You'll receive a unique shareable link that you can distribute to your users.</p>
+              </div>
+            </div>
+
+            <div class="docs-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3>Share with Users</h3>
+                <p>Users can visit your link, upload their photo, optionally add their name, and generate their personalized DP in seconds.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="docs-section">
+          <h2>Creating Templates</h2>
+
+          <div class="docs-subsection">
+            <h3>Template Image Requirements</h3>
+            <ul class="docs-list">
+              <li><strong>Format:</strong> PNG recommended (supports transparency), JPG also accepted</li>
+              <li><strong>Size:</strong> Maximum 16MB file size</li>
+              <li><strong>Dimensions:</strong> Square images (1:1 ratio) work best, but any aspect ratio is supported</li>
+              <li><strong>Transparency:</strong> Use PNG with transparent areas where the user's photo will appear</li>
+            </ul>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>Template Settings</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Template Name</td>
+                  <td>A unique identifier for your template (required)</td>
+                </tr>
+                <tr>
+                  <td>Event Name</td>
+                  <td>Displayed as the page title when users generate their DP</td>
+                </tr>
+                <tr>
+                  <td>Page Subtitle</td>
+                  <td>Secondary text shown below the event name</td>
+                </tr>
+                <tr>
+                  <td>Footer Text</td>
+                  <td>Optional text displayed at the bottom of the generation page</td>
+                </tr>
+                <tr>
+                  <td>Share Message</td>
+                  <td>Pre-filled text when users share their DP to social media</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>Photo Settings</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Photo Shape</td>
+                  <td>Choose between circle or rectangle for the user's photo</td>
+                </tr>
+                <tr>
+                  <td>Photo Size</td>
+                  <td>Size of the photo area as a percentage of the template (15-70%)</td>
+                </tr>
+                <tr>
+                  <td>Photo Position</td>
+                  <td>Drag the photo handle to position where users' photos will appear</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>Text Settings</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Font Size</td>
+                  <td>Size of the user's name text (2-10% of image height)</td>
+                </tr>
+                <tr>
+                  <td>Text Color</td>
+                  <td>Color of the user's name text</td>
+                </tr>
+                <tr>
+                  <td>Text Position</td>
+                  <td>Drag the text handle to position where names will appear</td>
+                </tr>
+                <tr>
+                  <td>Custom Font</td>
+                  <td>Upload a custom font file (.ttf, .otf, .woff)</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="docs-note"><strong>Note:</strong> The name field is optional for users. If your template doesn't need text, users can leave it blank.</p>
+          </div>
+        </section>
+
+        <section class="docs-section">
+          <h2>Managing Templates</h2>
+
+          <div class="docs-subsection">
+            <h3>Viewing Templates</h3>
+            <p>Visit the <a href="/templates">Generated Templates</a> page to see all your saved templates. You can:</p>
+            <ul class="docs-list">
+              <li><strong>Search:</strong> Filter templates by name using the search box</li>
+              <li><strong>View Details:</strong> Click on a template card to see full configuration</li>
+              <li><strong>Copy Link:</strong> Quickly copy the shareable link to your clipboard</li>
+            </ul>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>Editing Templates</h3>
+            <p>To edit an existing template:</p>
+            <ol class="docs-list">
+              <li>Go to <a href="/templates">Generated Templates</a></li>
+              <li>Click on the template you want to edit</li>
+              <li>Click the "Edit" button in the modal</li>
+              <li>Make your changes and save</li>
+            </ol>
+            <p class="docs-note">Editing a template updates it in place - the shareable link remains the same.</p>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>Deleting Templates</h3>
+            <p>To delete a template, open its details modal and click "Delete". This action cannot be undone, and the shareable link will no longer work.</p>
+          </div>
+        </section>
+
+        <section class="docs-section">
+          <h2>User Experience</h2>
+
+          <div class="docs-subsection">
+            <h3>What Users See</h3>
+            <p>When users visit your template link, they see a simple form with:</p>
+            <ul class="docs-list">
+              <li>Your event name and subtitle</li>
+              <li>An optional name input field</li>
+              <li>A photo upload area (supports PNG, JPG, HEIC up to 16MB)</li>
+              <li>A "Generate DP" button</li>
+            </ul>
+          </div>
+
+          <div class="docs-subsection">
+            <h3>After Generation</h3>
+            <p>Once the DP is generated, users can:</p>
+            <ul class="docs-list">
+              <li><strong>Download:</strong> Save the image to their device</li>
+              <li><strong>Share:</strong> Post directly to Twitter, LinkedIn, or Instagram</li>
+              <li><strong>Create Another:</strong> Generate a new DP with different settings</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="docs-section">
+          <h2>API Reference</h2>
+          <p>DP Generator provides a simple REST API for programmatic access.</p>
+
+          <div class="docs-subsection">
+            <h3>Endpoints</h3>
+
+            <div class="api-endpoint">
+              <div class="api-method get">GET</div>
+              <code>/api/get-config?config_id={id}</code>
+              <p>Retrieve a specific template configuration.</p>
+            </div>
+
+            <div class="api-endpoint">
+              <div class="api-method get">GET</div>
+              <code>/api/list-configs</code>
+              <p>List all saved template configurations.</p>
+            </div>
+
+            <div class="api-endpoint">
+              <div class="api-method post">POST</div>
+              <code>/api/save-config</code>
+              <p>Create or update a template configuration.</p>
+            </div>
+
+            <div class="api-endpoint">
+              <div class="api-method delete">DELETE</div>
+              <code>/api/delete-config?config_id={id}</code>
+              <p>Delete a template configuration.</p>
+            </div>
+
+            <div class="api-endpoint">
+              <div class="api-method post">POST</div>
+              <code>/api/process-image</code>
+              <p>Generate a DP image. Accepts multipart form data with image and configuration.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="docs-section">
+          <h2>Tips & Best Practices</h2>
+
+          <div class="docs-tips">
+            <div class="docs-tip">
+              <div class="tip-icon">1</div>
+              <div class="tip-content">
+                <h4>Design for the photo area</h4>
+                <p>Leave a clear, appropriately-sized area in your template where users' photos will be placed. Consider the circular crop when designing.</p>
+              </div>
+            </div>
+
+            <div class="docs-tip">
+              <div class="tip-icon">2</div>
+              <div class="tip-content">
+                <h4>Test with different photos</h4>
+                <p>Before sharing, test your template with various photo types (portraits, landscapes) to ensure it looks good in all cases.</p>
+              </div>
+            </div>
+
+            <div class="docs-tip">
+              <div class="tip-icon">3</div>
+              <div class="tip-content">
+                <h4>Keep text readable</h4>
+                <p>Choose a text color that contrasts well with your template background. Avoid placing text over busy areas.</p>
+              </div>
+            </div>
+
+            <div class="docs-tip">
+              <div class="tip-icon">4</div>
+              <div class="tip-content">
+                <h4>Write engaging share messages</h4>
+                <p>Craft a compelling share message that users will want to post. Include relevant hashtags and calls to action.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="docs-section docs-section-last">
+          <h2>Need Help?</h2>
+          <p>If you have questions or run into issues, please open an issue on our <a href="https://github.com/ifihan/getdp/issues" target="_blank" rel="noopener">GitHub repository</a>.</p>
+        </section>
+
+        <footer class="docs-footer">
+          <p>DP Generator - Create beautiful profile pictures</p>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>

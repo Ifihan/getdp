@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - DP Generator</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body class="dashboard-body">
+    <header class="nav-header">
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="/" class="nav-logo">DP Generator</a>
+          <nav class="nav-links">
+            <a href="/" class="nav-link active">Create Template</a>
+            <a href="/docs" class="nav-link">Documentation</a>
+          </nav>
+        </div>
+        <div class="nav-right">
+          <a href="/templates" class="nav-link nav-link-primary">Generated Templates</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <div>
+            <h1>Create New Template</h1>
+            <p class="subtitle">Configure your DP template settings</p>
+          </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="admin-layout">
+          <div class="admin-controls">
+            <div class="admin-section">
+              <h2>Template Details</h2>
+              <div class="input-group">
+                <label for="templateName">Template Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="templateName"
+                  placeholder="e.g., My Conference 2025"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="admin-section">
+              <h2>Template Image</h2>
+              <div
+                class="upload-area upload-area-small"
+                id="templateUpload"
+                role="button"
+                tabindex="0"
+                aria-label="Upload custom template"
+              >
+                <div class="upload-icon">+</div>
+                <div class="upload-text">Upload Template</div>
+                <div class="upload-hint">PNG with transparency</div>
+                <div class="upload-filename hidden" id="templateFilename"></div>
+              </div>
+              <input
+                type="file"
+                id="templateInput"
+                accept="image/png,image/jpeg"
+                class="hidden"
+                aria-label="Template file input"
+              />
+            </div>
+
+            <div class="admin-section">
+              <h2>Event Settings</h2>
+              <div class="input-group">
+                <label for="conferenceName">Event Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  id="conferenceName"
+                  placeholder="e.g., Tech Summit 2025"
+                />
+              </div>
+              <div class="input-group">
+                <label for="pageSubtitle">Page Subtitle (Optional)</label>
+                <input
+                  type="text"
+                  id="pageSubtitle"
+                  placeholder="e.g., Generate your profile picture"
+                />
+              </div>
+              <div class="input-group">
+                <label for="footerText">Footer Text (Optional)</label>
+                <textarea
+                  id="footerText"
+                  rows="2"
+                  placeholder="e.g., Annual Tech Conference | November 4-6, 2025"
+                ></textarea>
+              </div>
+              <div class="input-group">
+                <label for="shareMessage">Share Message (Optional)</label>
+                <textarea
+                  id="shareMessage"
+                  rows="3"
+                  placeholder="Custom message for social media sharing"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="admin-section">
+              <h2>Font Settings</h2>
+              <div
+                class="upload-area upload-area-small"
+                id="fontUpload"
+                role="button"
+                tabindex="0"
+                aria-label="Upload custom font"
+              >
+                <div class="upload-icon">Aa</div>
+                <div class="upload-text">Custom Font</div>
+                <div class="upload-hint">.ttf, .otf, .woff</div>
+                <div class="upload-filename hidden" id="fontFilename"></div>
+              </div>
+              <input
+                type="file"
+                id="fontInput"
+                accept=".ttf,.otf,.woff,.woff2"
+                class="hidden"
+                aria-label="Font file input"
+              />
+              <div class="input-group">
+                <label for="textColor">Text Color</label>
+                <input type="color" id="textColor" value="#000000" />
+              </div>
+            </div>
+
+            <div class="admin-section">
+              <h2>Image Settings</h2>
+
+              <div class="input-group">
+                <label>Photo Shape</label>
+                <div class="shape-toggle">
+                  <button type="button" class="shape-btn active" data-shape="circle" id="circleBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    Circle
+                  </button>
+                  <button type="button" class="shape-btn" data-shape="rectangle" id="rectangleBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    </svg>
+                    Rectangle
+                  </button>
+                </div>
+              </div>
+
+              <div class="slider-group">
+                <label class="slider-label" for="imageSize">
+                  <span>Size</span>
+                  <span class="slider-value" id="imageSizeValue">40%</span>
+                </label>
+                <input
+                  type="range"
+                  id="imageSize"
+                  min="15"
+                  max="70"
+                  value="40"
+                  step="1"
+                  aria-describedby="imageSizeValue"
+                />
+              </div>
+            </div>
+
+            <div class="admin-section">
+              <h2>Text Size</h2>
+              <div class="slider-group">
+                <label class="slider-label" for="fontSize">
+                  <span>Font Size</span>
+                  <span class="slider-value" id="fontSizeValue">4%</span>
+                </label>
+                <input
+                  type="range"
+                  id="fontSize"
+                  min="2"
+                  max="10"
+                  value="4"
+                  step="1"
+                  aria-describedby="fontSizeValue"
+                />
+              </div>
+            </div>
+
+            <div class="admin-section">
+              <h2>Name Field</h2>
+              <div class="input-group">
+                <label class="toggle-label">
+                  <input type="checkbox" id="nameRequired" checked />
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Require user to enter name</span>
+                </label>
+                <p class="input-hint">When disabled, the name field will not be available for users</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-preview">
+            <h2>Live Preview</h2>
+            <p class="preview-instructions">Drag the photo and text to position them</p>
+
+            <div class="preview-canvas-container" id="previewContainer">
+              <canvas id="previewCanvas"></canvas>
+
+              <div class="draggable-element photo-handle" id="photoHandle" title="Drag to position photo">
+                <div class="handle-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 8v8M8 12h8"/>
+                  </svg>
+                </div>
+                <span class="handle-label">Photo</span>
+              </div>
+
+              <div class="draggable-element text-handle" id="textHandle" title="Drag to position text">
+                <div class="handle-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+                  </svg>
+                </div>
+                <span class="handle-label">Text</span>
+              </div>
+            </div>
+
+            <div class="preview-info">
+              <div class="position-display">
+                <span>Photo: <strong id="photoPositionDisplay">50%, 50%</strong></span>
+                <span>Text: <strong id="textPositionDisplay">50%, 75%</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="button" id="saveConfigBtn">
+          Save Template
+        </button>
+
+        <div class="share-link-box" id="shareLinkBox">
+          <p class="share-link-label">Share this link with users</p>
+          <div class="share-link-input">
+            <input type="text" id="shareLink" readonly value="" aria-label="Share link" />
+            <button type="button" id="copyLinkBtn">Copy</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+      <div class="custom-alert">
+        <div class="custom-alert-header">
+          <div class="custom-alert-icon" id="customAlertIcon"></div>
+          <h3 class="custom-alert-title" id="customAlertTitle">Success!</h3>
+        </div>
+        <div class="custom-alert-body">
+          <p class="custom-alert-message" id="customAlertMessage"></p>
+          <div class="custom-alert-steps hidden" id="customAlertSteps"></div>
+        </div>
+        <div class="custom-alert-footer">
+          <button type="button" class="custom-alert-button" id="customAlertButton">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+  </body>
+</html>
