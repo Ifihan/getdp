@@ -1,4 +1,5 @@
-# Routes package initialization
+"""Routes package initialization."""
+
 from .api import api_bp
 from .main import main_bp
 from .admin import admin_bp

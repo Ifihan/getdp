@@ -1,11 +1,7 @@
 /**
  * DP Generator - Templates Page Script
- * Handles displaying, filtering, and managing generated templates
  */
 
-// ============================================
-// STATE
-// ============================================
 const state = {
   templates: [],
   filteredTemplates: [],
@@ -13,20 +9,12 @@ const state = {
   deleteTargetId: null,
 };
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
 const elements = {
-  // Grid and containers
   templatesGrid: document.getElementById('templatesGrid'),
   emptyState: document.getElementById('emptyState'),
   templatesLoading: document.getElementById('templatesLoading'),
   templatesCount: document.getElementById('countNumber'),
-
-  // Search
   searchInput: document.getElementById('searchInput'),
-
-  // Template Modal
   templateModal: document.getElementById('templateModal'),
   modalClose: document.getElementById('modalClose'),
   modalTitle: document.getElementById('modalTitle'),
@@ -37,13 +25,9 @@ const elements = {
   modalCopyBtn: document.getElementById('modalCopyBtn'),
   modalEditBtn: document.getElementById('modalEditBtn'),
   modalDeleteBtn: document.getElementById('modalDeleteBtn'),
-
-  // Delete Modal
   deleteModal: document.getElementById('deleteModal'),
   cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
   confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
-
-  // Alert
   alertOverlay: document.getElementById('customAlertOverlay'),
   alertIcon: document.getElementById('customAlertIcon'),
   alertTitle: document.getElementById('customAlertTitle'),
@@ -51,9 +35,6 @@ const elements = {
   alertButton: document.getElementById('customAlertButton'),
 };
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 function formatDate(dateString) {
   if (!dateString) return 'Unknown date';
   const date = new Date(dateString);
@@ -106,9 +87,6 @@ function getTemplateLink(configId) {
   return `${window.location.origin}/generate-dp?config=${configId}`;
 }
 
-// ============================================
-// TEMPLATE CARD RENDERING
-// ============================================
 function createTemplateCard(template, configId) {
   const card = document.createElement('div');
   card.className = 'template-card';
@@ -160,7 +138,6 @@ function createTemplateCard(template, configId) {
     </div>
   `;
 
-  // Event listeners
   const copyBtn = card.querySelector('.btn-copy');
   copyBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -186,9 +163,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// ============================================
-// TEMPLATE MANAGEMENT
-// ============================================
 async function loadTemplates() {
   elements.templatesLoading.classList.add('show');
   elements.templatesGrid.innerHTML = '';
@@ -227,7 +201,6 @@ function renderTemplates() {
 
   elements.emptyState.classList.remove('show');
 
-  // Sort by created_at (newest first)
   templates.sort((a, b) => {
     const dateA = new Date(a[1].created_at || 0);
     const dateB = new Date(b[1].created_at || 0);
@@ -256,9 +229,6 @@ function filterTemplates(query) {
   renderTemplates();
 }
 
-// ============================================
-// COPY LINK FUNCTIONALITY
-// ============================================
 async function copyTemplateLink(configId) {
   const link = getTemplateLink(configId);
 
@@ -270,7 +240,6 @@ async function copyTemplateLink(configId) {
       message: 'The template link has been copied to your clipboard.',
     });
   } catch (err) {
-    // Fallback for older browsers
     const textArea = document.createElement('textarea');
     textArea.value = link;
     document.body.appendChild(textArea);
@@ -285,31 +254,24 @@ async function copyTemplateLink(configId) {
   }
 }
 
-// ============================================
-// MODAL MANAGEMENT
-// ============================================
 function openTemplateModal(configId) {
   const template = state.templates[configId];
   if (!template) return;
 
   state.selectedTemplate = { id: configId, ...template };
 
-  // Populate modal
   elements.modalTitle.textContent = template.template_name || template.conference_name || 'Untitled Template';
   elements.modalDate.textContent = `Created: ${formatDateTime(template.created_at)}`;
   elements.modalLink.value = getTemplateLink(configId);
 
-  // Set preview image - use template image if available, otherwise show placeholder
   if (template.template_id) {
     elements.modalPreview.src = `/api/uploads/templates/${template.template_id}`;
     elements.modalPreview.style.display = 'block';
   } else {
-    // Use a default/demo template
     elements.modalPreview.src = '/static/assets/demo.png';
     elements.modalPreview.style.display = 'block';
   }
 
-  // Populate configuration details
   elements.modalConfig.innerHTML = `
     <div class="config-item">
       <div class="config-item-label">Event Name</div>
@@ -372,7 +334,6 @@ async function deleteTemplate() {
       throw new Error('Failed to delete template');
     }
 
-    // Remove from state
     delete state.templates[state.deleteTargetId];
     state.filteredTemplates = Object.entries(state.templates);
 
@@ -400,16 +361,11 @@ function editTemplate() {
   window.location.href = `/?edit=${state.selectedTemplate.id}`;
 }
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
 function setupEventListeners() {
-  // Search
   elements.searchInput.addEventListener('input', (e) => {
     filterTemplates(e.target.value);
   });
 
-  // Template Modal
   elements.modalClose.addEventListener('click', closeTemplateModal);
   elements.templateModal.addEventListener('click', (e) => {
     if (e.target === elements.templateModal) closeTemplateModal();
@@ -424,14 +380,12 @@ function setupEventListeners() {
   elements.modalEditBtn.addEventListener('click', editTemplate);
   elements.modalDeleteBtn.addEventListener('click', openDeleteModal);
 
-  // Delete Modal
   elements.cancelDeleteBtn.addEventListener('click', closeDeleteModal);
   elements.confirmDeleteBtn.addEventListener('click', deleteTemplate);
   elements.deleteModal.addEventListener('click', (e) => {
     if (e.target === elements.deleteModal) closeDeleteModal();
   });
 
-  // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (elements.deleteModal.classList.contains('show')) {
@@ -443,9 +397,6 @@ function setupEventListeners() {
   });
 }
 
-// ============================================
-// INITIALIZATION
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   loadTemplates();

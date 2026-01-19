@@ -1,6 +1,5 @@
-"""
-Image processing service for DP generation.
-"""
+"""Image processing service for DP generation."""
+
 import io
 import base64
 import textwrap
@@ -19,7 +18,6 @@ from backend.config import (
 )
 from backend.utils.logger import get_logger
 
-# Register HEIF/HEIC support
 register_heif_opener()
 
 logger = get_logger()
@@ -28,18 +26,8 @@ logger = get_logger()
 class ImageProcessor:
     """Service for processing and generating display pictures."""
 
-    def __init__(
-        self,
-        template_path: Path = None,
-        font_path: Path = None,
-    ):
-        """
-        Initialize the image processor.
-
-        Args:
-            template_path: Path to template/frame image
-            font_path: Path to font file
-        """
+    def __init__(self, template_path: Path = None, font_path: Path = None):
+        """Initialize the image processor."""
         self.template_path = template_path or DEFAULT_TEMPLATE_PATH
         self.font_path = font_path or DEFAULT_FONT_PATH
         self._template = None
@@ -91,30 +79,12 @@ class ImageProcessor:
         font_size: float = None,
         text_color: tuple = None,
     ) -> str:
-        """
-        Process an image and generate a display picture.
-
-        Args:
-            image_data: Raw image bytes
-            username: User's name to display
-            image_x: Horizontal position (0-1, center offset)
-            image_y: Vertical position (0-1, from top)
-            image_size: Photo size as fraction of frame width
-            image_shape: Photo shape ('circle' or 'rectangle')
-            text_x: Text horizontal position (0-1, from left)
-            text_y: Text vertical position (0-1, from top)
-            font_size: Font size as fraction of frame width
-            text_color: RGBA tuple for text color
-
-        Returns:
-            Base64-encoded JPEG image string
-        """
+        """Process an image and generate a display picture."""
         if not self._template or not self._font:
             raise RuntimeError("Resources not loaded")
 
         logger.info(f"Processing image for user: {username}")
 
-        # Use defaults if not provided
         photo_size = image_size or DEFAULT_CIRCLE_SIZE_PERCENT
         photo_y = image_y if image_y is not None else DEFAULT_CIRCLE_Y_PERCENT
         photo_x_offset = image_x if image_x is not None else 0.5
@@ -125,10 +95,8 @@ class ImageProcessor:
         color = text_color or DEFAULT_TEXT_COLOR
 
         try:
-            # Open and process user image
             user_image = Image.open(io.BytesIO(image_data))
 
-            # Handle EXIF orientation
             try:
                 user_image = ImageOps.exif_transpose(user_image)
             except Exception:
@@ -136,39 +104,24 @@ class ImageProcessor:
 
             user_image = user_image.convert("RGBA")
 
-            # Calculate photo dimensions
             photo_diameter = int(self.frame_width * photo_size)
 
-            # Resize and crop
-            user_image_resized = self._resize_and_crop(
-                user_image, photo_diameter, photo_diameter
-            )
+            user_image_resized = self._resize_and_crop(user_image, photo_diameter, photo_diameter)
 
-            # Apply mask based on shape
             if photo_shape == 'circle':
                 mask = self._create_circular_mask(photo_diameter)
                 user_image_resized.putalpha(mask)
-            else:
-                # Rectangle: no special mask needed, just keep as is
-                pass
 
-            # Create result from template
             result = self._template.copy()
 
-            # Calculate paste position
             paste_x = int((self.frame_width * photo_x_offset) - (photo_diameter / 2))
             paste_y = int(self.frame_height * photo_y) - (photo_diameter // 2)
 
-            # Paste user image
             result.paste(user_image_resized, (paste_x, paste_y), user_image_resized)
 
-            # Add username text
             draw = ImageDraw.Draw(result)
-            self._add_username_text(
-                draw, username, text_x_pos, text_y_pos, font_size_pct, color
-            )
+            self._add_username_text(draw, username, text_x_pos, text_y_pos, font_size_pct, color)
 
-            # Convert to RGB and encode
             result_rgb = result.convert("RGB")
             img_io = io.BytesIO()
             result_rgb.save(img_io, "JPEG", quality=90, optimize=False)
@@ -183,11 +136,8 @@ class ImageProcessor:
             logger.error(f"Image processing failed: {e}", exc_info=True)
             raise
 
-    def _resize_and_crop(
-        self, image: Image.Image, target_width: int, target_height: int
-    ) -> Image.Image:
+    def _resize_and_crop(self, image: Image.Image, target_width: int, target_height: int) -> Image.Image:
         """Resize and crop image to fit target dimensions."""
-        # Limit max dimension for memory efficiency
         max_dimension = 1024
         if image.width > max_dimension or image.height > max_dimension:
             image.thumbnail((max_dimension, max_dimension), Image.Resampling.BICUBIC)
@@ -231,34 +181,25 @@ class ImageProcessor:
         username = username.upper()
         text_box_width = int(self.frame_width * 0.4)
 
-        # Calculate font size
         base_size = int(self.frame_width * font_size_pct)
 
-        # Adjust for long names
         if len(username) > 15:
             base_size = int(base_size * (15 / len(username)))
 
         font = self._font.font_variant(size=base_size)
 
-        # Calculate line wrapping
-        avg_char_width = sum(
-            font.getbbox(c)[2] for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        ) / 26
+        avg_char_width = sum(font.getbbox(c)[2] for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ") / 26
         max_chars_per_line = int(text_box_width / avg_char_width)
         lines = textwrap.wrap(username, width=max_chars_per_line, break_long_words=True)
 
         if not lines:
             return
 
-        # Calculate text position
-        line_heights = [
-            font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines
-        ]
+        line_heights = [font.getbbox(line)[3] - font.getbbox(line)[1] for line in lines]
         total_text_height = sum(line_heights) + (len(lines) - 1) * int(base_size * 0.3)
         text_box_center_y = int(self.frame_height * text_y)
         start_y = text_box_center_y - (total_text_height // 2)
 
-        # Draw text (centered on text_x position)
         current_y = start_y
         for line, line_height in zip(lines, line_heights):
             text_width = font.getbbox(line)[2]

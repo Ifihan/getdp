@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body class="dashboard-body">
-    <!-- Fixed Navigation Header -->
     <header class="nav-header">
       <div class="nav-container">
         <div class="nav-left">
@@ -23,7 +22,6 @@
       </div>
     </header>
 
-    <!-- Main Content -->
     <main class="dashboard-main">
       <div class="templates-container">
         <div class="templates-header">
@@ -40,7 +38,6 @@
           </a>
         </div>
 
-        <!-- Search and Filter -->
         <div class="templates-toolbar">
           <div class="search-box">
             <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -59,12 +56,9 @@
           </div>
         </div>
 
-        <!-- Templates Grid -->
         <div class="templates-grid" id="templatesGrid">
-          <!-- Template cards will be inserted here -->
         </div>
 
-        <!-- Empty State -->
         <div class="empty-state" id="emptyState">
           <div class="empty-state-icon">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -78,7 +72,6 @@
           <a href="/" class="button">Create Template</a>
         </div>
 
-        <!-- Loading State -->
         <div class="templates-loading" id="templatesLoading">
           <div class="spinner"></div>
           <p>Loading templates...</p>
@@ -86,7 +79,6 @@
       </div>
     </main>
 
-    <!-- Template Detail Modal -->
     <div class="modal-overlay" id="templateModal">
       <div class="modal-content">
         <button class="modal-close" id="modalClose" aria-label="Close modal">
@@ -106,7 +98,6 @@
           <div class="modal-details">
             <h3>Configuration</h3>
             <div class="config-grid" id="modalConfig">
-              <!-- Configuration details will be inserted here -->
             </div>
           </div>
         </div>
@@ -123,7 +114,6 @@
       </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div class="modal-overlay" id="deleteModal">
       <div class="modal-content modal-small">
         <div class="modal-header">
@@ -139,7 +129,6 @@
       </div>
     </div>
 
-    <!-- Custom Alert Dialog -->
     <div class="custom-alert-overlay" id="customAlertOverlay">
       <div class="custom-alert">
         <div class="custom-alert-header">

@@ -1,6 +1,4 @@
-"""
-Admin routes for configuration management.
-"""
+"""Admin routes for configuration management."""
 
 import json
 import uuid
@@ -13,7 +11,6 @@ from backend.utils import get_logger
 admin_bp = Blueprint("admin", __name__)
 logger = get_logger()
 
-# Configuration storage path
 CONFIG_DIR = BASE_DIR / "data"
 CONFIG_FILE = CONFIG_DIR / "admin_config.json"
 
@@ -35,11 +32,9 @@ def load_config(config_id=None):
             data = json.load(f)
 
         if config_id:
-            # Look for specific config
             configs = data.get("configs", {})
             return configs.get(config_id)
         else:
-            # Return default/latest config
             return data.get("default")
 
     except (json.JSONDecodeError, IOError) as e:
@@ -64,32 +59,23 @@ def load_all_configs():
 
 
 def save_config(config, config_id=None):
-    """Save configuration to file.
-
-    If config_id is provided and exists, updates the existing config.
-    Otherwise creates a new config with a new ID.
-    """
+    """Save configuration to file."""
     ensure_config_dir()
 
     try:
-        # Load existing data
         data = {"configs": {}, "default": None}
         if CONFIG_FILE.exists():
             with open(CONFIG_FILE, "r") as f:
                 data = json.load(f)
 
-        # Check if this is an update to an existing config
         if config_id and "configs" in data and config_id in data["configs"]:
-            # Update existing config - preserve created_at if not provided
             existing = data["configs"][config_id]
             if "created_at" not in config and "created_at" in existing:
                 config["created_at"] = existing["created_at"]
             config["updated_at"] = __import__("datetime").datetime.now().isoformat()
         elif not config_id:
-            # Generate new config ID
             config_id = uuid.uuid4().hex[:8]
 
-        # Save config
         if "configs" not in data:
             data["configs"] = {}
 
@@ -120,9 +106,7 @@ def delete_config(config_id):
         if "configs" in data and config_id in data["configs"]:
             del data["configs"][config_id]
 
-            # Update default if we deleted it
             if data.get("default") and data["configs"]:
-                # Set default to most recent config
                 data["default"] = list(data["configs"].values())[-1]
             elif not data["configs"]:
                 data["default"] = None
@@ -140,7 +124,7 @@ def delete_config(config_id):
 
 @admin_bp.route("/")
 def dashboard_page():
-    """Serve the dashboard page (template creation)."""
+    """Serve the dashboard page."""
     return render_template("dashboard.html")
 
 
@@ -162,40 +146,20 @@ def admin_page():
     return render_template("admin.html")
 
 
-# API routes for admin configuration
 @admin_bp.route("/api/save-config", methods=["POST"])
 def api_save_config():
-    """
-    Save admin configuration.
-
-    JSON body:
-        - config_id: Existing config ID to update (optional)
-        - template_name: Name of the template
-        - template_id: Custom template ID (optional)
-        - font_id: Custom font ID (optional)
-        - image_x: Image horizontal position (optional)
-        - image_y: Image vertical position (optional)
-        - image_size: Image size (optional)
-        - text_y: Text vertical position (optional)
-        - font_size: Font size (optional)
-        - text_color: Text color hex code (optional)
-        - created_at: Creation timestamp (optional)
-    """
+    """Save admin configuration."""
     try:
         config = request.get_json()
 
         if not config:
             return jsonify({"error": "No configuration provided"}), 400
 
-        # Extract config_id if provided (for updates)
         config_id = config.pop("config_id", None)
-
         config_id = save_config(config, config_id)
 
         logger.info(f"Configuration saved: {config_id}")
-        return jsonify(
-            {"message": "Configuration saved successfully", "config_id": config_id}
-        )
+        return jsonify({"message": "Configuration saved successfully", "config_id": config_id})
 
     except Exception as e:
         logger.error(f"Failed to save configuration: {e}", exc_info=True)
@@ -204,12 +168,7 @@ def api_save_config():
 
 @admin_bp.route("/api/get-config", methods=["GET"])
 def api_get_config():
-    """
-    Get admin configuration.
-
-    Query params:
-        - config_id: Specific configuration ID (optional)
-    """
+    """Get admin configuration."""
     try:
         config_id = request.args.get("config_id")
         config = load_config(config_id)
@@ -226,12 +185,7 @@ def api_get_config():
 
 @admin_bp.route("/api/list-configs", methods=["GET"])
 def api_list_configs():
-    """
-    List all saved configurations.
-
-    Returns:
-        - configs: Dictionary of all configurations keyed by config_id
-    """
+    """List all saved configurations."""
     try:
         configs = load_all_configs()
         return jsonify({"configs": configs})
@@ -243,12 +197,7 @@ def api_list_configs():
 
 @admin_bp.route("/api/delete-config", methods=["DELETE"])
 def api_delete_config():
-    """
-    Delete a configuration.
-
-    Query params:
-        - config_id: Configuration ID to delete (required)
-    """
+    """Delete a configuration."""
     try:
         config_id = request.args.get("config_id")
 

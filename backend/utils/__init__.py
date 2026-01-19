@@ -1,4 +1,5 @@
-# Utils package initialization
+"""Utils package initialization."""
+
 from .logger import setup_logger, get_logger
 from .validators import validate_image_file, validate_font_file, validate_position_params
 

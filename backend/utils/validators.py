@@ -1,6 +1,5 @@
-"""
-Input validation utilities.
-"""
+"""Input validation utilities."""
+
 from pathlib import Path
 from werkzeug.datastructures import FileStorage
 from backend.config import ALLOWED_IMAGE_EXTENSIONS, ALLOWED_FONT_EXTENSIONS, MAX_CONTENT_LENGTH
@@ -15,34 +14,21 @@ class ValidationError(Exception):
 
 
 def validate_image_file(file: FileStorage, max_size: int = MAX_CONTENT_LENGTH) -> None:
-    """
-    Validate an uploaded image file.
-
-    Args:
-        file: The uploaded file
-        max_size: Maximum file size in bytes
-
-    Raises:
-        ValidationError: If validation fails
-    """
+    """Validate an uploaded image file."""
     if not file or file.filename == "":
         logger.warning("Image validation failed: No file provided")
         raise ValidationError("No image file provided")
 
-    # Check extension
     filename = file.filename.lower()
     ext = Path(filename).suffix
 
     if ext not in ALLOWED_IMAGE_EXTENSIONS:
         logger.warning(f"Image validation failed: Invalid extension '{ext}'")
-        raise ValidationError(
-            f"Invalid file type. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}"
-        )
+        raise ValidationError(f"Invalid file type. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}")
 
-    # Check file size
-    file.seek(0, 2)  # Seek to end
+    file.seek(0, 2)
     size = file.tell()
-    file.seek(0)  # Reset to beginning
+    file.seek(0)
 
     if size > max_size:
         logger.warning(f"Image validation failed: File too large ({size} bytes)")
@@ -52,16 +38,7 @@ def validate_image_file(file: FileStorage, max_size: int = MAX_CONTENT_LENGTH) -
 
 
 def validate_font_file(file: FileStorage, max_size: int = 10 * 1024 * 1024) -> None:
-    """
-    Validate an uploaded font file.
-
-    Args:
-        file: The uploaded file
-        max_size: Maximum file size in bytes (default 10MB)
-
-    Raises:
-        ValidationError: If validation fails
-    """
+    """Validate an uploaded font file."""
     if not file or file.filename == "":
         logger.warning("Font validation failed: No file provided")
         raise ValidationError("No font file provided")
@@ -71,9 +48,7 @@ def validate_font_file(file: FileStorage, max_size: int = 10 * 1024 * 1024) -> N
 
     if ext not in ALLOWED_FONT_EXTENSIONS:
         logger.warning(f"Font validation failed: Invalid extension '{ext}'")
-        raise ValidationError(
-            f"Invalid font type. Allowed: {', '.join(ALLOWED_FONT_EXTENSIONS)}"
-        )
+        raise ValidationError(f"Invalid font type. Allowed: {', '.join(ALLOWED_FONT_EXTENSIONS)}")
 
     file.seek(0, 2)
     size = file.tell()
@@ -87,33 +62,20 @@ def validate_font_file(file: FileStorage, max_size: int = 10 * 1024 * 1024) -> N
 
 
 def validate_position_params(params: dict) -> dict:
-    """
-    Validate and sanitize position parameters.
-
-    Args:
-        params: Dictionary of position parameters
-
-    Returns:
-        Sanitized parameters dictionary
-
-    Raises:
-        ValidationError: If validation fails
-    """
+    """Validate and sanitize position parameters."""
     sanitized = {}
 
-    # Image position (x, y as percentages 0-100)
     for key in ["image_x", "image_y"]:
         if key in params:
             try:
                 value = float(params[key])
                 if not 0 <= value <= 100:
                     raise ValidationError(f"{key} must be between 0 and 100")
-                sanitized[key] = value / 100  # Convert to decimal
+                sanitized[key] = value / 100
             except (ValueError, TypeError):
                 logger.warning(f"Invalid {key} value: {params.get(key)}")
                 raise ValidationError(f"Invalid {key} value")
 
-    # Image size (percentage 10-100)
     if "image_size" in params:
         try:
             value = float(params["image_size"])
@@ -124,7 +86,6 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid image_size value: {params.get('image_size')}")
             raise ValidationError("Invalid image_size value")
 
-    # Image shape (circle or rectangle)
     if "image_shape" in params:
         shape = params["image_shape"].lower() if isinstance(params["image_shape"], str) else ""
         if shape in ["circle", "rectangle"]:
@@ -133,7 +94,6 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid image_shape value: {params.get('image_shape')}")
             raise ValidationError("image_shape must be 'circle' or 'rectangle'")
 
-    # Text position (x as percentage 0-100)
     if "text_x" in params:
         try:
             value = float(params["text_x"])
@@ -144,7 +104,6 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid text_x value: {params.get('text_x')}")
             raise ValidationError("Invalid text_x value")
 
-    # Text position (y as percentage 0-100)
     if "text_y" in params:
         try:
             value = float(params["text_y"])
@@ -155,7 +114,6 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid text_y value: {params.get('text_y')}")
             raise ValidationError("Invalid text_y value")
 
-    # Font size (percentage 1-20)
     if "font_size" in params:
         try:
             value = float(params["font_size"])
@@ -166,7 +124,6 @@ def validate_position_params(params: dict) -> dict:
             logger.warning(f"Invalid font_size value: {params.get('font_size')}")
             raise ValidationError("Invalid font_size value")
 
-    # Text color (hex string)
     if "text_color" in params:
         color = params["text_color"]
         if isinstance(color, str):

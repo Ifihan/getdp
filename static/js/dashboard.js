@@ -1,69 +1,49 @@
 /**
  * DP Generator - Dashboard Script with Interactive Preview
- * Handles template/font uploads, drag-to-position, and live preview
  */
 
-// ============================================
-// CONFIGURATION
-// ============================================
 const CONFIG = {
-  MAX_FILE_SIZE: 16 * 1024 * 1024, // 16MB
-  MAX_FONT_SIZE: 10 * 1024 * 1024, // 10MB
+  MAX_FILE_SIZE: 16 * 1024 * 1024,
+  MAX_FONT_SIZE: 10 * 1024 * 1024,
   CANVAS_WIDTH: 1024,
   CANVAS_HEIGHT: 1024,
   DUMMY_NAME: 'John Doe',
 };
 
-// ============================================
-// STATE
-// ============================================
 const state = {
   templateId: null,
   fontId: null,
   configSaved: false,
-  editingConfigId: null, // Track if we're editing an existing config
-  // Images
+  editingConfigId: null,
   templateImage: null,
   dummyPhotoImage: null,
   customFont: null,
-  // Positions (as percentages)
   imageX: 50,
   imageY: 50,
   imageSize: 40,
-  imageShape: 'circle', // 'circle' or 'rectangle'
+  imageShape: 'circle',
   textX: 50,
   textY: 75,
   fontSize: 4,
   textColor: '#000000',
-  // Drag state
   isDraggingPhoto: false,
   isDraggingText: false,
   dragStartX: 0,
   dragStartY: 0,
 };
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
 const elements = {
-  // Template name
   templateName: document.getElementById('templateName'),
-
-  // Upload areas
   templateUpload: document.getElementById('templateUpload'),
   templateInput: document.getElementById('templateInput'),
   templateFilename: document.getElementById('templateFilename'),
   fontUpload: document.getElementById('fontUpload'),
   fontInput: document.getElementById('fontInput'),
   fontFilename: document.getElementById('fontFilename'),
-
-  // Conference settings
   conferenceName: document.getElementById('conferenceName'),
   pageSubtitle: document.getElementById('pageSubtitle'),
   footerText: document.getElementById('footerText'),
   shareMessage: document.getElementById('shareMessage'),
-
-  // Controls
   imageSizeSlider: document.getElementById('imageSize'),
   imageSizeValue: document.getElementById('imageSizeValue'),
   fontSizeSlider: document.getElementById('fontSize'),
@@ -72,20 +52,14 @@ const elements = {
   circleBtn: document.getElementById('circleBtn'),
   rectangleBtn: document.getElementById('rectangleBtn'),
   nameRequiredCheckbox: document.getElementById('nameRequired'),
-
-  // Preview
   canvas: document.getElementById('previewCanvas'),
   photoHandle: document.getElementById('photoHandle'),
   textHandle: document.getElementById('textHandle'),
   photoPositionDisplay: document.getElementById('photoPositionDisplay'),
   textPositionDisplay: document.getElementById('textPositionDisplay'),
-
-  // Buttons
   saveConfigBtn: document.getElementById('saveConfigBtn'),
   copyLinkBtn: document.getElementById('copyLinkBtn'),
   shareLink: document.getElementById('shareLink'),
-
-  // UI
   errorMessage: document.getElementById('errorMessage'),
   alertOverlay: document.getElementById('customAlertOverlay'),
   alertIcon: document.getElementById('customAlertIcon'),
@@ -97,9 +71,6 @@ const elements = {
 
 const ctx = elements.canvas.getContext('2d');
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 function showError(message) {
   elements.errorMessage.textContent = message;
   elements.errorMessage.classList.add('show');
@@ -136,28 +107,21 @@ function showCustomAlert(options) {
   };
 }
 
-// ============================================
-// CANVAS DRAWING
-// ============================================
 function initializeCanvas() {
   elements.canvas.width = CONFIG.CANVAS_WIDTH;
   elements.canvas.height = CONFIG.CANVAS_HEIGHT;
 }
 
 function drawPreview() {
-  // Clear canvas
   ctx.clearRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
 
-  // Draw template
   if (state.templateImage) {
     ctx.drawImage(state.templateImage, 0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
   } else {
-    // Default white background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
   }
 
-  // Draw photo (circle or rectangle)
   if (state.dummyPhotoImage) {
     const centerX = (state.imageX / 100) * CONFIG.CANVAS_WIDTH;
     const centerY = (state.imageY / 100) * CONFIG.CANVAS_HEIGHT;
@@ -166,14 +130,12 @@ function drawPreview() {
     ctx.save();
 
     if (state.imageShape === 'circle') {
-      // Circular clip
       const radius = size * 0.5;
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
 
-      // Calculate image dimensions to fill circle
       const imgAspect = state.dummyPhotoImage.width / state.dummyPhotoImage.height;
       const drawSize = radius * 2;
       let drawWidth, drawHeight, offsetX, offsetY;
@@ -192,7 +154,6 @@ function drawPreview() {
 
       ctx.drawImage(state.dummyPhotoImage, offsetX, offsetY, drawWidth, drawHeight);
     } else {
-      // Rectangle clip
       const rectX = centerX - size / 2;
       const rectY = centerY - size / 2;
 
@@ -201,7 +162,6 @@ function drawPreview() {
       ctx.closePath();
       ctx.clip();
 
-      // Calculate image dimensions to fill rectangle
       const imgAspect = state.dummyPhotoImage.width / state.dummyPhotoImage.height;
       let drawWidth, drawHeight, offsetX, offsetY;
 
@@ -223,7 +183,6 @@ function drawPreview() {
     ctx.restore();
   }
 
-  // Draw text
   const textX = (state.textX / 100) * CONFIG.CANVAS_WIDTH;
   const textY = (state.textY / 100) * CONFIG.CANVAS_HEIGHT;
   const fontSize = (state.fontSize / 100) * CONFIG.CANVAS_HEIGHT;
@@ -234,7 +193,6 @@ function drawPreview() {
   ctx.textBaseline = 'middle';
   ctx.fillText(CONFIG.DUMMY_NAME.toUpperCase(), textX, textY);
 
-  // Update handle positions
   updateHandlePositions();
 }
 
@@ -242,30 +200,23 @@ function updateHandlePositions() {
   const container = elements.canvas.parentElement;
   const rect = container.getBoundingClientRect();
 
-  // Photo handle
   const photoX = (state.imageX / 100) * rect.width;
   const photoY = (state.imageY / 100) * (rect.width * (CONFIG.CANVAS_HEIGHT / CONFIG.CANVAS_WIDTH));
   elements.photoHandle.style.left = `${photoX}px`;
   elements.photoHandle.style.top = `${photoY}px`;
   elements.photoHandle.style.transform = 'translate(-50%, -50%)';
 
-  // Text handle
   const textHandleX = (state.textX / 100) * rect.width;
   const textHandleY = (state.textY / 100) * (rect.width * (CONFIG.CANVAS_HEIGHT / CONFIG.CANVAS_WIDTH));
   elements.textHandle.style.left = `${textHandleX}px`;
   elements.textHandle.style.top = `${textHandleY}px`;
   elements.textHandle.style.transform = 'translate(-50%, -50%)';
 
-  // Update position displays
   elements.photoPositionDisplay.textContent = `${Math.round(state.imageX)}%, ${Math.round(state.imageY)}%`;
   elements.textPositionDisplay.textContent = `${Math.round(state.textX)}%, ${Math.round(state.textY)}%`;
 }
 
-// ============================================
-// IMAGE LOADING
-// ============================================
 function loadDefaultImages() {
-  // Load default template
   const templateImg = new Image();
   templateImg.crossOrigin = 'anonymous';
   templateImg.onload = () => {
@@ -274,22 +225,18 @@ function loadDefaultImages() {
   };
   templateImg.src = '/static/assets/demo.png';
 
-  // Create dummy photo (gradient circle)
   createDummyPhoto();
 }
 
 function createDummyPhoto() {
-  // Create a canvas for dummy photo - simple black/white design
   const dummyCanvas = document.createElement('canvas');
   dummyCanvas.width = 800;
   dummyCanvas.height = 800;
   const dummyCtx = dummyCanvas.getContext('2d');
 
-  // Light gray background
   dummyCtx.fillStyle = '#f5f5f5';
   dummyCtx.fillRect(0, 0, 800, 800);
 
-  // Draw diagonal stripes pattern
   dummyCtx.strokeStyle = '#e5e5e5';
   dummyCtx.lineWidth = 40;
   for (let i = -800; i < 1600; i += 100) {
@@ -299,14 +246,12 @@ function createDummyPhoto() {
     dummyCtx.stroke();
   }
 
-  // Add "SAMPLE" text in center
   dummyCtx.fillStyle = '#d4d4d4';
   dummyCtx.font = 'bold 80px Arial';
   dummyCtx.textAlign = 'center';
   dummyCtx.textBaseline = 'middle';
   dummyCtx.fillText('SAMPLE', 400, 400);
 
-  // Convert to image
   const img = new Image();
   img.onload = () => {
     state.dummyPhotoImage = img;
@@ -315,9 +260,6 @@ function createDummyPhoto() {
   img.src = dummyCanvas.toDataURL();
 }
 
-// ============================================
-// FILE UPLOAD HANDLERS
-// ============================================
 function setupUploadArea(uploadArea, inputElement, filenameElement, options) {
   const { onFile, maxSize, type } = options;
 
@@ -371,7 +313,6 @@ function setupUploadArea(uploadArea, inputElement, filenameElement, options) {
   }
 }
 
-// Template upload
 setupUploadArea(
   elements.templateUpload,
   elements.templateInput,
@@ -397,20 +338,17 @@ setupUploadArea(
 
         state.templateId = data.template_id;
 
-        // Load and preview template
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
           img.onload = () => {
             state.templateImage = img;
 
-            // Update canvas dimensions to match template
             CONFIG.CANVAS_WIDTH = img.width;
             CONFIG.CANVAS_HEIGHT = img.height;
             elements.canvas.width = img.width;
             elements.canvas.height = img.height;
 
-            // Update container aspect ratio
             const container = elements.canvas.parentElement;
             container.style.aspectRatio = `${img.width} / ${img.height}`;
 
@@ -429,7 +367,6 @@ setupUploadArea(
   }
 );
 
-// Font upload
 setupUploadArea(
   elements.fontUpload,
   elements.fontInput,
@@ -454,7 +391,6 @@ setupUploadArea(
         }
 
         state.fontId = data.font_id;
-        // Note: Custom font rendering in canvas requires additional setup
         drawPreview();
 
       } catch (error) {
@@ -466,9 +402,6 @@ setupUploadArea(
   }
 );
 
-// ============================================
-// SLIDER HANDLERS
-// ============================================
 elements.imageSizeSlider.addEventListener('input', () => {
   state.imageSize = parseFloat(elements.imageSizeSlider.value);
   elements.imageSizeValue.textContent = state.imageSize + '%';
@@ -486,7 +419,6 @@ elements.textColorInput.addEventListener('input', () => {
   drawPreview();
 });
 
-// Shape toggle buttons
 elements.circleBtn.addEventListener('click', () => {
   state.imageShape = 'circle';
   elements.circleBtn.classList.add('active');
@@ -501,19 +433,13 @@ elements.rectangleBtn.addEventListener('click', () => {
   drawPreview();
 });
 
-// ============================================
-// DRAG AND DROP FUNCTIONALITY
-// ============================================
 function setupDragHandles() {
-  // Photo handle drag
   elements.photoHandle.addEventListener('mousedown', startDragPhoto);
   elements.photoHandle.addEventListener('touchstart', startDragPhoto);
 
-  // Text handle drag
   elements.textHandle.addEventListener('mousedown', startDragText);
   elements.textHandle.addEventListener('touchstart', startDragText);
 
-  // Document-level handlers
   document.addEventListener('mousemove', handleDrag);
   document.addEventListener('touchmove', handleDrag);
   document.addEventListener('mouseup', stopDrag);
@@ -544,18 +470,15 @@ function handleDrag(e) {
   const container = elements.canvas.parentElement;
   const rect = container.getBoundingClientRect();
 
-  // Calculate position as percentage
   const percentX = ((pos.x - rect.left) / rect.width) * 100;
   const percentY = ((pos.y - rect.top) / (rect.width * (CONFIG.CANVAS_HEIGHT / CONFIG.CANVAS_WIDTH))) * 100;
 
   if (state.isDraggingPhoto) {
-    // Constrain to canvas bounds
     state.imageX = Math.max(10, Math.min(90, percentX));
     state.imageY = Math.max(10, Math.min(90, percentY));
   }
 
   if (state.isDraggingText) {
-    // Text can move both horizontally and vertically
     state.textX = Math.max(10, Math.min(90, percentX));
     state.textY = Math.max(50, Math.min(95, percentY));
   }
@@ -575,9 +498,6 @@ function getEventPosition(e) {
   return { x: e.clientX, y: e.clientY };
 }
 
-// ============================================
-// CONFIGURATION MANAGEMENT
-// ============================================
 function getConfiguration() {
   return {
     template_name: elements.templateName.value.trim() || 'Untitled Template',
@@ -602,7 +522,6 @@ function getConfiguration() {
 
 async function saveConfiguration() {
   try {
-    // Validate template name
     if (!elements.templateName.value.trim()) {
       showError('Please enter a template name');
       elements.templateName.focus();
@@ -611,7 +530,6 @@ async function saveConfiguration() {
 
     const config = getConfiguration();
 
-    // If editing, include the config_id to update existing
     if (state.editingConfigId) {
       config.config_id = state.editingConfigId;
     }
@@ -632,15 +550,12 @@ async function saveConfiguration() {
 
     state.configSaved = true;
 
-    // If this was a new config, store the ID for future edits
     if (!state.editingConfigId && data.config_id) {
       state.editingConfigId = data.config_id;
-      // Update URL to reflect we're now editing this config
       const newUrl = `${window.location.pathname}?edit=${data.config_id}`;
       window.history.replaceState({}, '', newUrl);
     }
 
-    // Update share link
     const baseUrl = window.location.origin;
     const configId = state.editingConfigId || data.config_id;
     const shareUrl = configId ? `${baseUrl}/generate-dp?config=${configId}` : `${baseUrl}/generate-dp`;
@@ -674,7 +589,6 @@ async function loadConfiguration() {
     if (data.config) {
       const config = data.config;
 
-      // Apply configuration
       if (config.template_name) {
         elements.templateName.value = config.template_name;
       }
@@ -710,7 +624,6 @@ async function loadConfiguration() {
       if (config.template_id) state.templateId = config.template_id;
       if (config.font_id) state.fontId = config.font_id;
 
-      // Load conference settings
       if (config.conference_name) {
         elements.conferenceName.value = config.conference_name;
       }
@@ -724,12 +637,10 @@ async function loadConfiguration() {
         elements.shareMessage.value = config.share_message;
       }
 
-      // Load name required setting
       if (config.name_required !== undefined) {
         elements.nameRequiredCheckbox.checked = config.name_required;
       }
 
-      // Update share link
       if (data.config_id) {
         const baseUrl = window.location.origin;
         elements.shareLink.value = `${baseUrl}/generate-dp?config=${data.config_id}`;
@@ -746,9 +657,6 @@ async function loadConfiguration() {
   }
 }
 
-// ============================================
-// EVENT HANDLERS
-// ============================================
 elements.saveConfigBtn.addEventListener('click', saveConfiguration);
 
 elements.copyLinkBtn.addEventListener('click', async () => {
@@ -777,26 +685,19 @@ elements.copyLinkBtn.addEventListener('click', async () => {
   }
 });
 
-// Handle window resize
 window.addEventListener('resize', () => {
   if (state.templateImage || state.dummyPhotoImage) {
     drawPreview();
   }
 });
 
-// ============================================
-// INITIALIZATION
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Set initial share link
   elements.shareLink.value = `${window.location.origin}/generate-dp`;
 
-  // Initialize canvas and preview
   initializeCanvas();
   loadDefaultImages();
   setupDragHandles();
 
-  // Load existing configuration if editing
   const urlParams = new URLSearchParams(window.location.search);
   const editId = urlParams.get('edit');
   if (editId) {
@@ -804,7 +705,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Load specific configuration by ID (for editing)
 async function loadConfigurationById(configId) {
   try {
     const response = await fetch(`/api/get-config?config_id=${configId}`);
@@ -818,10 +718,8 @@ async function loadConfigurationById(configId) {
     if (data.config) {
       const config = data.config;
 
-      // Set editing mode - this config ID will be used when saving
       state.editingConfigId = configId;
 
-      // Apply all configuration values
       if (config.template_name) {
         elements.templateName.value = config.template_name;
       }
@@ -856,16 +754,13 @@ async function loadConfigurationById(configId) {
 
       if (config.template_id) {
         state.templateId = config.template_id;
-        // Load the template image from server
         loadTemplateImage(config.template_id);
-        // Update UI to show template is loaded
         elements.templateUpload.classList.add('has-file');
         elements.templateFilename.textContent = 'Template loaded';
         elements.templateFilename.classList.remove('hidden');
       }
       if (config.font_id) state.fontId = config.font_id;
 
-      // Load conference settings
       if (config.conference_name) {
         elements.conferenceName.value = config.conference_name;
       }
@@ -879,12 +774,10 @@ async function loadConfigurationById(configId) {
         elements.shareMessage.value = config.share_message;
       }
 
-      // Load name required setting
       if (config.name_required !== undefined) {
         elements.nameRequiredCheckbox.checked = config.name_required;
       }
 
-      // Update share link
       const baseUrl = window.location.origin;
       elements.shareLink.value = `${baseUrl}/generate-dp?config=${configId}`;
 
@@ -899,22 +792,17 @@ async function loadConfigurationById(configId) {
   }
 }
 
-/**
- * Load template image from server by ID
- */
 function loadTemplateImage(templateId) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
     state.templateImage = img;
 
-    // Update canvas dimensions to match template
     CONFIG.CANVAS_WIDTH = img.width;
     CONFIG.CANVAS_HEIGHT = img.height;
     elements.canvas.width = img.width;
     elements.canvas.height = img.height;
 
-    // Update container aspect ratio
     const container = elements.canvas.parentElement;
     container.style.aspectRatio = `${img.width} / ${img.height}`;
 

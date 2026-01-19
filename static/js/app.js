@@ -1,39 +1,24 @@
 /**
  * DP Generator - User Application Script
- * Simple interface for users to upload photo and enter name
  */
 
-// ============================================
-// CONFIGURATION
-// ============================================
 const CONFIG = {
   SHARE_TEXT: "Check out my new profile picture! Generated with DP Generator.",
   SHARE_URL: "",
-  MAX_FILE_SIZE: 16 * 1024 * 1024, // 16MB
+  MAX_FILE_SIZE: 16 * 1024 * 1024,
 };
 
-// ============================================
-// STATE
-// ============================================
 const state = {
   selectedImage: null,
   processedImageData: null,
   adminConfig: null,
 };
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
 const elements = {
-  // Form inputs
   usernameInput: document.getElementById('usernameInput'),
-
-  // File upload
   photoUpload: document.getElementById('photoUpload'),
   photoInput: document.getElementById('photoInput'),
   photoFilename: document.getElementById('photoFilename'),
-
-  // UI elements
   mainForm: document.getElementById('mainForm'),
   generateBtn: document.getElementById('generateBtn'),
   loading: document.getElementById('loading'),
@@ -42,13 +27,9 @@ const elements = {
   previewImage: document.getElementById('previewImage'),
   downloadBtn: document.getElementById('downloadBtn'),
   resetBtn: document.getElementById('resetBtn'),
-
-  // Page elements
   pageTitle: document.getElementById('pageTitle'),
   pageSubtitle: document.getElementById('pageSubtitle'),
   footerText: document.getElementById('footerText'),
-
-  // Alert dialog
   alertOverlay: document.getElementById('customAlertOverlay'),
   alertIcon: document.getElementById('customAlertIcon'),
   alertTitle: document.getElementById('customAlertTitle'),
@@ -57,9 +38,6 @@ const elements = {
   alertButton: document.getElementById('customAlertButton'),
 };
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 function isMobile() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
@@ -127,9 +105,6 @@ function getConfigIdFromUrl() {
   return params.get('config');
 }
 
-// ============================================
-// FILE UPLOAD HANDLER
-// ============================================
 function setupPhotoUpload() {
   const uploadArea = elements.photoUpload;
   const inputElement = elements.photoInput;
@@ -137,7 +112,6 @@ function setupPhotoUpload() {
 
   uploadArea.addEventListener('click', () => inputElement.click());
 
-  // Keyboard accessibility
   uploadArea.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -169,13 +143,11 @@ function setupPhotoUpload() {
   });
 
   function handleFile(file) {
-    // Validate file type
     if (!file.type.startsWith('image/') && !file.name.match(/\.heic$/i)) {
       showError('Please upload an image file');
       return;
     }
 
-    // Validate file size
     if (file.size > CONFIG.MAX_FILE_SIZE) {
       showError(`File too large. Maximum size: ${CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB`);
       return;
@@ -189,14 +161,9 @@ function setupPhotoUpload() {
   }
 }
 
-// ============================================
-// IMAGE PROCESSING
-// ============================================
 async function generateDP() {
   const username = elements.usernameInput.value.trim();
 
-  // Check if name is required based on template config
-  // Only validate if explicitly required (true or undefined means required)
   const nameRequired = state.adminConfig?.name_required !== false;
   if (nameRequired && !username) {
     showError('Please enter your name');
@@ -217,7 +184,6 @@ async function generateDP() {
     formData.append('image', state.selectedImage);
     formData.append('username', username);
 
-    // Add admin config parameters if available
     if (state.adminConfig) {
       if (state.adminConfig.template_id) {
         formData.append('template_id', state.adminConfig.template_id);
@@ -263,7 +229,6 @@ async function generateDP() {
     elements.mainForm.classList.add('hidden');
     elements.previewContainer.classList.add('show');
 
-    // Update page title
     document.getElementById('pageTitle').textContent = 'Your DP is Ready!';
     document.getElementById('pageSubtitle').textContent = 'Download and share your profile picture';
 
@@ -274,13 +239,9 @@ async function generateDP() {
   }
 }
 
-// ============================================
-// DOWNLOAD & RESET
-// ============================================
 function downloadImage() {
   const link = document.createElement('a');
   link.href = elements.previewImage.src;
-  // Use conference name for filename if available, otherwise generic
   const filename = state.adminConfig?.conference_name
     ? `${state.adminConfig.conference_name.toLowerCase().replace(/\s+/g, '-')}-dp.png`
     : 'my-dp.png';
@@ -289,21 +250,17 @@ function downloadImage() {
 }
 
 function resetForm() {
-  // Reset state
   state.selectedImage = null;
   state.processedImageData = null;
 
-  // Reset form
   elements.usernameInput.value = '';
   elements.photoInput.value = '';
   elements.photoUpload.classList.remove('has-file');
   elements.photoFilename.classList.add('hidden');
 
-  // Show form, hide preview
   elements.mainForm.classList.remove('hidden');
   elements.previewContainer.classList.remove('show');
 
-  // Reset page title - use conference name from config or default
   const conferenceName = state.adminConfig?.conference_name || 'Get Your DP';
   const subtitle = state.adminConfig?.page_subtitle || 'Generate your profile picture';
   elements.pageTitle.textContent = conferenceName;
@@ -312,9 +269,6 @@ function resetForm() {
   hideError();
 }
 
-// ============================================
-// SOCIAL SHARING
-// ============================================
 async function getImageBlob() {
   try {
     const response = await fetch(elements.previewImage.src);
@@ -477,9 +431,6 @@ async function shareToInstagram() {
   });
 }
 
-// ============================================
-// LOAD ADMIN CONFIG
-// ============================================
 async function loadAdminConfig() {
   const configId = getConfigIdFromUrl();
 
@@ -495,43 +446,33 @@ async function loadAdminConfig() {
       if (data.config) {
         state.adminConfig = data.config;
 
-        // Apply conference name to page title
         if (data.config.conference_name) {
           elements.pageTitle.textContent = data.config.conference_name;
           document.title = `${data.config.conference_name} - Get Your DP`;
         }
 
-        // Apply page subtitle
         if (data.config.page_subtitle) {
           elements.pageSubtitle.textContent = data.config.page_subtitle;
         }
 
-        // Apply footer text
         if (data.config.footer_text) {
           elements.footerText.textContent = data.config.footer_text;
         }
 
-        // Update share message if provided
         if (data.config.share_message) {
           CONFIG.SHARE_TEXT = data.config.share_message;
         }
 
-        // Update name field requirement
         const nameInputGroup = document.getElementById('nameInputGroup');
-        console.log('Name required setting:', data.config.name_required, 'Type:', typeof data.config.name_required);
         if (data.config.name_required === false) {
-          console.log('Hiding name field');
           if (nameInputGroup) {
             nameInputGroup.style.display = 'none';
           }
         } else {
-          console.log('Showing name field');
           if (nameInputGroup) {
             nameInputGroup.style.display = 'block';
           }
         }
-
-        console.log('Loaded admin config', data.config);
       }
     }
   } catch (error) {
@@ -539,9 +480,6 @@ async function loadAdminConfig() {
   }
 }
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
 elements.generateBtn.addEventListener('click', generateDP);
 elements.downloadBtn.addEventListener('click', downloadImage);
 elements.resetBtn.addEventListener('click', resetForm);
@@ -550,9 +488,6 @@ document.getElementById('shareTwitter').addEventListener('click', shareToTwitter
 document.getElementById('shareLinkedIn').addEventListener('click', shareToLinkedIn);
 document.getElementById('shareInstagram').addEventListener('click', shareToInstagram);
 
-// ============================================
-// INITIALIZATION
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
   setupPhotoUpload();
   loadAdminConfig();
