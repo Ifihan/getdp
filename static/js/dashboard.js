@@ -652,7 +652,6 @@ async function loadConfiguration() {
 
     return null;
   } catch (error) {
-    console.log('No existing configuration found');
     return null;
   }
 }
@@ -787,7 +786,6 @@ async function loadConfigurationById(configId) {
 
     return null;
   } catch (error) {
-    console.log('Failed to load configuration:', error);
     return null;
   }
 }
@@ -809,7 +807,7 @@ function loadTemplateImage(templateId) {
     drawPreview();
   };
   img.onerror = () => {
-    console.log('Failed to load template image, using default');
+    // Failed to load template image, using default
   };
   img.src = `/api/uploads/templates/${templateId}`;
 }

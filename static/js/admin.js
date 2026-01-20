@@ -627,7 +627,6 @@ async function loadConfiguration() {
 
     return null;
   } catch (error) {
-    console.log('No existing configuration found');
     return null;
   }
 }
